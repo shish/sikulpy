@@ -1,0 +1,5 @@
+
+
+
+class FindFailed(Exception):
+    pass
