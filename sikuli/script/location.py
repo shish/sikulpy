@@ -4,6 +4,9 @@ class Location(object):
         self.x = x
         self.y = y
 
+    def __repr__(self) -> str:
+        return "Location(%r, %r)" % (self.x, self.y)
+
     def getX(self):
         return float(self.x)
 

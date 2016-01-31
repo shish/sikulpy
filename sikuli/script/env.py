@@ -1,35 +1,43 @@
+import platform
 
 from .location import Location
+from .robot import Robot
 
 
 class Env(object):
+    @staticmethod
     def addHotkey(key, modifiers, handler):
         # FIXME
         pass
 
+    @staticmethod
     def removeHotkey(key, modifiers):
         # FIXME
         pass
 
-    def getOS(self):
+    @staticmethod
+    def getOS():
+        # FIXME: check that this matches sikuli's OS names
+        return platform.system()
+
+    @staticmethod
+    def getOSVersion():
         # FIXME
         pass
 
-    def getOSVersion(self):
-        # FIXME
-        pass
-
-    def getSikuliVersion(self):
+    @staticmethod
+    def getSikuliVersion():
         return "py-sikuli 0.0"
 
-    def getClipboard(self):
-        # FIXME
-        pass
+    @staticmethod
+    def getClipboard():
+        return Robot.getClipboard()
 
-    def isLockOn(self, key) -> bool:
-        # FIXME
-        pass
+    @staticmethod
+    def isLockOn(key) -> bool:
+        return Robot.isLockOn(key)
 
-    def getMouseLocation(self) -> Location:
-        # FIXME
-        pass
+    @staticmethod
+    def getMouseLocation() -> Location:
+        x, y = Robot.getMouseLocation()
+        return Location(x, y)

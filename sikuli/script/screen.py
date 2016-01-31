@@ -1,23 +1,27 @@
+import tempfile
+
 from .region import Region
 from .rectangle import Rectangle
+from .robot import Robot
 
 
 class Screen(Region):
-    def __init__(self, id: int):
-        super().__init__(Rectangle(0, 0, 1920, 1080))  # FIXME
-        self.id = id
+    def __init__(self, id_: int):
+        x, y, w, h = Robot.screenSize()
+        super().__init__(Rectangle(x, y, w, h))
+        self.id = id_
 
     def getNumberScreens(self) -> int:
-        # FIXME
-        return 1
+        return Robot.getNumberScreens()
 
     def getBounds(self) -> Rectangle:
-        # FIXME
-        return None
+        return self.getRect()
 
-    def capture(self, rect:Rectangle) -> str:
-        # FIXME return filename
-        pass
+    def capture(self, rect: Rectangle) -> str:
+        fn = tempfile.mktemp(".png")
+        img = Robot.capture(rect.getBounds())
+        img.save(fn)
+        return fn
 
     def selectRegion(self, text=None) -> Region:
         # FIXME: interactive selection, with label

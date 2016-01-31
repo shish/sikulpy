@@ -1,18 +1,18 @@
 
 from .location import Location
-
-
-def _load_img(filename):
-    return None
+from .image import Image
 
 
 class Pattern(object):
-    def __init__(self, filename:str):
+    def __init__(self, filename: str):
         self.filename = filename
 
         self.similarity = 0.7
-        self.img = _load_img(filename)
+        self.img = Image(filename)
         self.targetOffset = Location(self.img.w/2, self.img.h/2)
+
+    def __repr__(self) -> str:
+        return "Pattern(%r, %r)" % (self.img, self.targetOffset)
 
     def _copy(self):
         p = Pattern(self.filename)

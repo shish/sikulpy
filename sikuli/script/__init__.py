@@ -8,6 +8,7 @@ from .rectangle import Rectangle
 from .region import Region
 from .screen import Screen
 from .settings import Settings
+from .robot import Key, KeyModifier
 
 desktop = Screen(0)
 
@@ -21,6 +22,6 @@ def popup(text, title):
     pass
 
 
-def input(text, default):
+def input_(text, default):
     # FIXME
     pass

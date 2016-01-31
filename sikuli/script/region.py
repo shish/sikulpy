@@ -2,46 +2,28 @@ from time import sleep
 from enum import Enum
 import logging
 
-#from .match import Match
 from .settings import Settings
 from .rectangle import Rectangle
 from .location import Location
+from .pattern import Pattern
+from .env import Env
+from .robot import Mouse, Key, Robot
 
 from .exc import FindFailed
 
 log = logging.getLogger(__name__)
 
 
-class Robot(object):
-    def __init__(self):
-        pass
-
-    def mouseMove(self, (x, y)):
-        log.info("mouseMove((%r, %r))", x, y)
-
-    def mouseDown(self, button):
-        log.info("mouseDown(%r)", button)
-
-    def mouseUp(self, button):
-        log.info("mouseUp(%r)", button)
-
-    def keyDown(self, key):
-        log.info("keyDown(%r)", key)
-
-    def keyUp(self, key):
-        log.info("keyUp(%r)", key)
-
-
 class Region(Rectangle):
-    def __init__(self, rect:Rectangle):
+    def __init__(self, rect: Rectangle):
         super().__init__()
         self.setRect(rect)
 
-        self._robot = Robot()
         self._screen = None
         self._last_matches = []
 
         self.autoWaitTimeout = Settings.autoWaitTimeout
+        self._throwException = True
 
     # attributes
 
@@ -62,7 +44,12 @@ class Region(Rectangle):
 
     # extending a region
 
-    def offset(self, l:Location) -> 'Region':
+    def _copy(self):
+        r = Region(self)
+        r._screen = self._screen
+        return r
+
+    def offset(self, l: Location) -> 'Region':
         r = self._copy()
         r.x += l.x
         r.y += l.y
@@ -81,7 +68,7 @@ class Region(Rectangle):
 
     def above(self, range_=None):
         if not range_:
-            range_ = self.y - self.screen.y
+            range_ = self.y - self._screen.y
         r = self._copy()
         r.h = range_
         r.y -= range_
@@ -89,7 +76,7 @@ class Region(Rectangle):
 
     def below(self, range_=None):
         if not range_:
-            range_ = self.screen.h - (self.y + self.h)
+            range_ = self._screen.h - (self.y + self.h)
         r = self._copy()
         r.y += r.h
         r.h = range_
@@ -97,15 +84,15 @@ class Region(Rectangle):
 
     def left(self, range_=None):
         if not range_:
-            range_ = self.x - self.screen.x
+            range_ = self.x - self._screen.x
         r = self._copy()
         r.w = range_
         r.x -= range_
         return r
 
     def right(self, range_=None):
-        if not _range:
-            range_ = self.screen.w - (self.x + self.w)
+        if not range_:
+            range_ = self._screen.w - (self.x + self.w)
         r = self._copy()
         r.x += r.w
         r.w = range_
@@ -113,25 +100,54 @@ class Region(Rectangle):
 
     # finding
 
-    def find(self, target:Pattern) -> 'Match':
+    def find(self, target) -> 'Match':
         return self.findAll(target)[0]
 
-    def findAll(self, target:Pattern) -> ['Match']:
+    def findAll(self, target) -> ['Match']:
+        if not isinstance(target, Pattern):
+            target = Pattern(target)
+
+        img = Robot.capture((self.x, self.y, self.w, self.h))
+        log.info("Searching for %r within %r", target, img)
         matches = []
 
-        # FIXME
-        # get screenshot
-        # find matches
-        # sort by similarity
+        from .match import Match
+
+        import cv2  # EXT
+        import numpy as np  # EXT
+
+        img_rgb = np.array(img.img.convert('RGB'))
+        img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2GRAY)
+
+        #template = cv2.imread(target, 0)
+        template = np.array(target.img.img.convert('RGB'))
+        template = cv2.cvtColor(template, cv2.COLOR_RGB2GRAY)
+        w, h = template.shape[::-1]
+
+        res = cv2.matchTemplate(img_gray, template, cv2.TM_CCOEFF_NORMED)
+        threshold = 0.8  # FIXME: use specified threshold
+        loc = np.where(res >= threshold)
+        for pt in zip(*loc[::-1]):
+            matches.append(
+                Match(
+                    Rectangle(int(pt[0]), int(pt[1]), w, h),
+                    threshold,  # FIXME: use actual similarity value
+                    # FIXME: pass target.targetOffset?
+                )
+            )
+
+        matches = list(reversed(sorted(matches)))
 
         if not matches:
             raise FindFailed()
         self._last_matches = matches
         return matches
 
-    def wait(self, target, seconds=0) -> 'Match':
+    def wait(self, target, seconds=None) -> 'Match':
+        if seconds is None:
+            seconds = self.autoWaitTimeout
         while seconds >= 0:
-            x = self.exists(target)
+            x = self.find(target)
             if x:
                 return x
             sleep(1)
@@ -145,7 +161,7 @@ class Region(Rectangle):
 
     def exists(self, target, seconds=None) -> 'Match':
         try:
-            return self.find(target, seconds)
+            return self.wait(target, seconds)
         except FindFailed:
             return None
 
@@ -191,29 +207,30 @@ class Region(Rectangle):
     def click(self, target=None, modifiers=None) -> int:
         # FIXME: modifiers
         self.mouseMove(target)
-        self.mouseDown(MouseButton.BUTTON_1)
+        sleep(1)
+        self.mouseDown(Mouse.LEFT)
         sleep(0.1)
-        self.mouseUp(MouseButton.BUTTON_1)
+        self.mouseUp(Mouse.LEFT)
         return 1  # no. of clicks
 
     def doubleClick(self, target=None, modifiers=None) -> int:
         # FIXME: modifiers
         self.mouseMove(target)
-        self.mouseDown(MouseButton.BUTTON_1)
+        self.mouseDown(Mouse.LEFT)
         sleep(0.1)
-        self.mouseUp(MouseButton.BUTTON_1)
+        self.mouseUp(Mouse.LEFT)
         sleep(0.1)
-        self.mouseDown(MouseButton.BUTTON_1)
+        self.mouseDown(Mouse.LEFT)
         sleep(0.1)
-        self.mouseUp(MouseButton.BUTTON_1)
-        return 1  # no. of doubleclicks
+        self.mouseUp(Mouse.LEFT)
+        return 1  # no. of double clicks
 
     def rightClick(self, target=None, modifiers=None) -> int:
         # FIXME: modifiers
         self.mouseMove(target)
-        self.mouseDown(MouseButton.BUTTON_2)
+        self.mouseDown(Mouse.RIGHT)
         sleep(0.1)
-        self.mouseUp(MouseButton.BUTTON_2)
+        self.mouseUp(Mouse.RIGHT)
         return 1  # no. of clicks
 
     def highlight(self, seconds=None):
@@ -225,17 +242,18 @@ class Region(Rectangle):
 
     def dragDrop(self, target1, target2, modifiers=None):
         self.drag(target1)
-        self.dropAt(target2, delay=Settings.DelayAfterDrag + Settings.DelayAfterDrop)  # FIXME: aren't these the same thing?
+        # FIXME: aren't these the same thing?
+        self.dropAt(target2, delay=Settings.DelayAfterDrag + Settings.DelayBeforeDrop)
 
     def drag(self, target=None):
         self.mouseMove(target)
-        self.mouseDown(Mouse.BUTTON_1)
+        self.mouseDown(Mouse.LEFT)
 
     def dropAt(self, target=None, delay=None):
         self.mouseMove(target)
         if delay:
             sleep(delay)
-        self.mouseUp(Mouse.BUTTON_1)
+        self.mouseUp(Mouse.LEFT)
 
     def type(self, target=None, text=None, modifiers=None):
         target = self._targetOrLast(target)
@@ -243,9 +261,8 @@ class Region(Rectangle):
         pass
 
     def paste(self, target=None, text=None, modifiers=None):
-        target = self._targetOrLast(target)
-        # FIXME
-        pass
+        self.click(target)
+        self.type(Env.getClipboard())
 
     # OCR
 
@@ -256,30 +273,30 @@ class Region(Rectangle):
     # low-level mouse & keyboard
 
     def mouseDown(self, button):
-        self.robot.mouseDown(button)
+        Robot.mouseDown(button)
 
     def mouseUp(self, button):
-        self.robot.mouseUp(button)
+        Robot.mouseUp(button)
 
     def mouseMove(self, target):
         loc = self._toLocation(self._targetOrLast(target))
         if Settings.MouseMoveDelay:
             sleep(Settings.MouseMoveDelay)
-        self.robot.mouseMove(loc.x, loc.y)
+        Robot.mouseMove((loc.x, loc.y))
 
     def wheel(self, target, button, steps=1):
         self.mouseMove(target)
         for n in range(0, steps):
             self.mouseDown(button)
-            time.sleep(0.1)
+            sleep(0.1)
             self.mouseUp(button)
-            time.sleep(0.1)
+            sleep(0.1)
 
     def keyUp(self, key):
-        self.robot.keyUp(key)
+        Robot.keyUp(key)
 
     def keyDown(self, key):
-        self.roboto.keyDown(key)
+        Robot.keyDown(key)
 
     # error handling
 
@@ -291,21 +308,19 @@ class Region(Rectangle):
         # FIXME
         pass
 
-    def setThrowException(self):
-        # FIXME
-        pass
+    def setThrowException(self, te: bool):
+        self._throwException = te
 
     def getThrowException(self) -> bool:
-        # FIXME
-        return True
+        return self._throwException
 
     # special
 
-    def getRegionFromPSRM(target) -> 'Region':
+    def getRegionFromPSRM(self, target) -> 'Region':
         # FIXME
         pass
 
-    def getLocationFromPSRML(target) -> Location:
+    def getLocationFromPSRML(self, target) -> Location:
         # FIXME
         pass
 
