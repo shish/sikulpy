@@ -1,4 +1,5 @@
 import tempfile
+import warnings
 
 from .region import Region
 from .rectangle import Rectangle
@@ -24,5 +25,5 @@ class Screen(Region):
         return fn
 
     def selectRegion(self, text=None) -> Region:
-        # FIXME: interactive selection, with label
-        pass
+        # interactive selection, with label
+        warnings.warn('Screen.selectRegion(%r) not implemented' % text)  # FIXME

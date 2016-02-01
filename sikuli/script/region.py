@@ -1,6 +1,7 @@
 from time import sleep
 from enum import Enum
 import logging
+import warnings
 
 from .settings import Settings
 from .rectangle import Rectangle
@@ -108,7 +109,7 @@ class Region(Rectangle):
             target = Pattern(target)
 
         img = Robot.capture((self.x, self.y, self.w, self.h))
-        log.info("Searching for %r within %r", target, img)
+        log.debug("Searching for %r within %r", target, img)
         matches = []
 
         from .match import Match
@@ -116,27 +117,33 @@ class Region(Rectangle):
         import cv2  # EXT
         import numpy as np  # EXT
 
-        img_rgb = np.array(img.img.convert('RGB'))
-        img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2GRAY)
+        region_img = np.array(img.img.convert('RGB'))
+        region_img = cv2.cvtColor(region_img, cv2.COLOR_BGR2GRAY)
 
-        #template = cv2.imread(target, 0)
-        template = np.array(target.img.img.convert('RGB'))
-        template = cv2.cvtColor(template, cv2.COLOR_RGB2GRAY)
-        w, h = template.shape[::-1]
+        target_img = np.array(target.img.img.convert('RGB'))
+        target_img = cv2.cvtColor(target_img, cv2.COLOR_BGR2GRAY)
+        w, h = target_img.shape[::-1]
 
-        res = cv2.matchTemplate(img_gray, template, cv2.TM_CCOEFF_NORMED)
+        res = cv2.matchTemplate(region_img, target_img, cv2.TM_CCOEFF_NORMED)
         threshold = 0.8  # FIXME: use specified threshold
         loc = np.where(res >= threshold)
         for pt in zip(*loc[::-1]):
             matches.append(
                 Match(
-                    Rectangle(int(pt[0]), int(pt[1]), w, h),
+                    Rectangle(self.x + int(pt[0]), self.y + int(pt[1]), w, h),
                     threshold,  # FIXME: use actual similarity value
                     # FIXME: pass target.targetOffset?
                 )
             )
+            cv2.rectangle(region_img, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
 
         matches = list(reversed(sorted(matches)))
+
+        #print(matches)
+        #cv2.imwrite('img1.png', region_img)
+        #cv2.imwrite('img2.png', target_img)
+        #cv2.imwrite('img3.png', res * 255)
+        #cv2.imwrite('img.png', img_rgb)
 
         if not matches:
             raise FindFailed()
@@ -156,7 +163,7 @@ class Region(Rectangle):
         raise FindFailed()
 
     def waitVanish(self, target, seconds=None) -> bool:
-        # FIXME
+        warnings.warn('Region.waitVanish(%r, %r) not implemented' % (target, seconds))  # FIXME
         return False
 
     def exists(self, target, seconds=None) -> 'Match':
@@ -168,24 +175,19 @@ class Region(Rectangle):
     # observing
 
     def onAppear(self, target, handler):
-        # FIXME
-        pass
+        warnings.warn('Region.onAppear(%r, %r) not implemented' % (target, handler))  # FIXME
 
     def onVanish(self, target, handler):
-        # FIXME
-        pass
+        warnings.warn('Region.onVanish(%r, %r) not implemented' % (target, handler))  # FIXME
 
     def onChange(self, target, handler):
-        # FIXME
-        pass
+        warnings.warn('Region.onChange(%r, %r) not implemented' % (target, handler))  # FIXME
 
     def observe(self, seconds, background=False):
-        # FIXME
-        pass
+        warnings.warn('Region.observe(%r, %r) not implemented' % (seconds, background))  # FIXME
 
     def stopObserver(self):
-        # FIXME
-        pass
+        warnings.warn('Region.stopObserver() not implemented')  # FIXME
 
     # actions
 
@@ -257,8 +259,7 @@ class Region(Rectangle):
 
     def type(self, target=None, text=None, modifiers=None):
         target = self._targetOrLast(target)
-        # FIXME
-        pass
+        warnings.warn('Region.type(%r, %r, %r) not implemented' % (target, text, modifiers))  # FIXME
 
     def paste(self, target=None, text=None, modifiers=None):
         self.click(target)
@@ -267,8 +268,7 @@ class Region(Rectangle):
     # OCR
 
     def text(self) -> str:
-        # FIXME
-        pass
+        warnings.warn('Region.text() not implemented')  # FIXME
 
     # low-level mouse & keyboard
 
@@ -300,13 +300,12 @@ class Region(Rectangle):
 
     # error handling
 
-    def setFindFailedResponse(self):
-        # FIXME
-        pass
+    def setFindFailedResponse(self, response):
+        # ABORT / SKIP / PROMPT / RETRY
+        warnings.warn('Region.setFindFailedResponse(%r) not implemented' % response)  # FIXME
 
     def getFindFailedResponse(self):
-        # FIXME
-        pass
+        warnings.warn('Region.getFindFailedResponse() not implemented')  # FIXME
 
     def setThrowException(self, te: bool):
         self._throwException = te
@@ -317,12 +316,10 @@ class Region(Rectangle):
     # special
 
     def getRegionFromPSRM(self, target) -> 'Region':
-        # FIXME
-        pass
+        warnings.warn('Region.getRegionFromPSRM(%r) not implemented' % target)  # FIXME
 
     def getLocationFromPSRML(self, target) -> Location:
-        # FIXME
-        pass
+        warnings.warn('Region.getLocationFromPSRML(%r) not implemented' % target)  # FIXME
 
 
 class SikuliEvent(object):

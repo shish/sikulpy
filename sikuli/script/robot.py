@@ -1,5 +1,6 @@
 import autopy  # EXT
 import pyscreenshot  # EXT
+import warnings
 
 from .image import Image
 
@@ -46,8 +47,7 @@ class Robot(object):
 
     @staticmethod
     def getMouseLocation() -> (int, int):
-        # FIXME
-        pass
+        warnings.warn('Robot.getMouseLocation() not implemented')  # FIXME
 
     # keyboard
     @staticmethod
@@ -62,18 +62,18 @@ class Robot(object):
 
     @staticmethod
     def getClipboard() -> str:
-        # FIXME
+        warnings.warn('Robot.getClipboard() not implemented')  # FIXME
         return ""
 
     @staticmethod
     def isLockOn(key) -> bool:
-        # FIXME
+        warnings.warn('Robot.isLockOn(%r) not implemented' % key)  # FIXME
         return False
 
     # screen
     @staticmethod
     def getNumberScreens() -> int:
-        # FIXME
+        warnings.warn('Robot.getNumberScreens() not implemented')  # FIXME
         return 1
 
     @staticmethod
@@ -84,11 +84,16 @@ class Robot(object):
     @staticmethod
     def capture(bbox: (int, int, int, int)=None) -> Image:
         log.info("capture(%r)", bbox)
-        #data = autopy.bitmap.capture_screen(bbox)
-        data = pyscreenshot.grab(bbox=bbox)
+        bbox2 = (
+            bbox[0], bbox[1],
+            bbox[0] + bbox[2], bbox[1] + bbox[3]
+        )
 
-        # OSX with retina display gives PNG of 2x the size requested
+        #data = autopy.bitmap.capture_screen(bbox)
+        data = pyscreenshot.grab(bbox=bbox2)
         if data.size[0] != bbox[2]:
-            data = data.resize((bbox[2], bbox[3]))
+            log.debug("Captured image is different size than we expected, shrinking")
+            data = data.resize((data.size[0]//2, data.size[1]//2))
+        #log.info("capture(%r) -> %r", bbox2, data.size)
 
         return Image(data)

@@ -1,3 +1,5 @@
+import warnings
+
 from .app import App
 from .env import Env
 from .finder import Finder
@@ -18,10 +20,8 @@ def find(ps):
 
 
 def popup(text, title):
-    # FIXME
-    pass
+    warnings.warn('sikuli.popup(%r, %r) not implemented' % (text, title))  # FIXME
 
 
 def input_(text, default):
-    # FIXME
-    pass
+    warnings.warn('sikuli.input(%r, %r) not implemented' % (text, default))  # FIXME

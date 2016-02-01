@@ -1,4 +1,5 @@
 import platform
+import warnings
 
 from .location import Location
 from .robot import Robot
@@ -7,13 +8,11 @@ from .robot import Robot
 class Env(object):
     @staticmethod
     def addHotkey(key, modifiers, handler):
-        # FIXME
-        pass
+        warnings.warn('Env.addHotKey(%r, %r, %r) not implemented' % (key, modifiers, handler))  # FIXME
 
     @staticmethod
     def removeHotkey(key, modifiers):
-        # FIXME
-        pass
+        warnings.warn('Env.removeHotKey(%r, %r) not implemented' % (key, modifiers))  # FIXME
 
     @staticmethod
     def getOS():
@@ -22,8 +21,7 @@ class Env(object):
 
     @staticmethod
     def getOSVersion():
-        # FIXME
-        pass
+        warnings.warn('Env.addOSVersion() not implemented')  # FIXME
 
     @staticmethod
     def getSikuliVersion():

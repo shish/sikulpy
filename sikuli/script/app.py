@@ -1,25 +1,21 @@
+import warnings
 
 from .region import Region
 
 
 class App(object):
     def open(self, application=None) -> 'App':
-        # FIXME
-        pass
+        warnings.warn('App.open(%r) not implemented' % application)  # FIXME
 
     def focus(self, application=None) -> 'App':
-        # FIXME
-        pass
+        warnings.warn('App.focus(%r) not implemented' % application)  # FIXME
 
     def close(self, application=None):
-        # FIXME
-        pass
+        warnings.warn('App.close(%r) not implemented' % application)  # FIXME
 
     def focusedWindow(self) -> Region:
-        # FIXME
-        pass
+        warnings.warn('App.focusedWindow() not implemented')  # FIXME
 
     def window(self, n=0) -> 'App':
-        # FIXME
-        pass
+        warnings.warn('App.window(%r) not implemented' % n)  # FIXME
 
