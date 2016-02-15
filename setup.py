@@ -1,5 +1,5 @@
 from setuptools import setup
-from sikulpy.version import VERSION
+from sikuli.version import VERSION
 
 setup(
     name='sikulpy',
@@ -27,12 +27,11 @@ setup(
         "Topic :: Utilities",
     ],
     packages=[
-        "sikulpy",
         "sikuli",
         "sikuli.script",
     ],
     entry_points={
-        'console_scripts': ['sikulpy = sikulpy.run:main'],
+        'console_scripts': ['sikulpy = sikuli.run:main'],
         'gui_script': []
     },
 )
