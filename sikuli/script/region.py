@@ -1,4 +1,11 @@
-from time import sleep
+"""
+http://doc.sikuli.org/region.html
+"""
+
+import cv2  # EXT
+import numpy as np  # EXT
+
+from time import time, sleep
 from enum import Enum
 import logging
 import warnings
@@ -8,7 +15,7 @@ from .rectangle import Rectangle
 from .location import Location
 from .pattern import Pattern
 from .env import Env
-from .robot import Mouse, Key, Robot
+from .robot import Mouse, Robot
 
 from .exc import FindFailed
 
@@ -16,7 +23,10 @@ log = logging.getLogger(__name__)
 
 
 class Region(Rectangle):
-    def __init__(self, rect: Rectangle):
+    # Constructor can be Region(Rectangle) or Region(x, y, w, h)
+    def __init__(self, rect, b=None, c=None, d=None):
+        if b is not None:
+            rect = Rectangle(rect, b, c, d)
         super().__init__()
         self.setRect(rect)
 
@@ -26,9 +36,13 @@ class Region(Rectangle):
         self.autoWaitTimeout = Settings.autoWaitTimeout
         self._throwException = True
 
+        # FIXME: unofficial
+        self.recycle_capture = False
+        self._last_capture = None
+
     # attributes
 
-    def setAutoWaitTimeout(self, t:float):
+    def setAutoWaitTimeout(self, t: float):
         self.autoWaitTimeout = t
 
     def getAutoWaitTimeout(self) -> float:
@@ -108,15 +122,18 @@ class Region(Rectangle):
         if not isinstance(target, Pattern):
             target = Pattern(target)
 
-        img = Robot.capture((self.x, self.y, self.w, self.h))
-        log.debug("Searching for %r within %r", target, img)
+        if self.recycle_capture and self._last_capture:
+            log.debug("Recycling capture")
+            img = self._last_capture
+            self.recycle_capture = False
+        else:
+            img = Robot.capture((self.x, self.y, self.w, self.h))
+            self._last_capture = img
         matches = []
 
         from .match import Match
 
-        import cv2  # EXT
-        import numpy as np  # EXT
-
+        _start = time()
         region_img = np.array(img.img.convert('RGB'))
         region_img = cv2.cvtColor(region_img, cv2.COLOR_BGR2GRAY)
 
@@ -125,45 +142,79 @@ class Region(Rectangle):
         w, h = target_img.shape[::-1]
 
         res = cv2.matchTemplate(region_img, target_img, cv2.TM_CCOEFF_NORMED)
-        threshold = 0.8  # FIXME: use specified threshold
-        loc = np.where(res >= threshold)
+        loc = np.where(res >= target.similarity)
         for pt in zip(*loc[::-1]):
-            matches.append(
-                Match(
-                    Rectangle(self.x + int(pt[0]), self.y + int(pt[1]), w, h),
-                    threshold,  # FIXME: use actual similarity value
-                    # FIXME: pass target.targetOffset?
-                )
+            # if there is a better match right next to this one, ignore this one
+            found_better = False
+            for x in [-1, 0, +1]:
+                for y in [-1, 0, +1]:
+                    if res[pt[1]+y, pt[0]+x] > res[pt[1], pt[0]]:
+                        found_better = True
+            if found_better:
+                continue
+
+            m = Match(
+                Rectangle(self.x + int(pt[0]), self.y + int(pt[1]), w, h),
+                float(res[pt[1], pt[0]]),
+                target.targetOffset
             )
-            cv2.rectangle(region_img, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
+            matches.append(m)
+
+            bl = (0, 0, 0)
+            wh = (255, 255, 255)
+            cv2.rectangle(region_img, pt, (pt[0] + w, pt[1] + h), bl, 4)
+            cv2.rectangle(region_img, pt, (pt[0] + w, pt[1] + h), wh, 3)
+            cv2.rectangle(region_img, pt, (pt[0] + w, pt[1] + h), bl, 2)
+            cv2.rectangle(region_img, pt, (pt[0] + w, pt[1] + h), wh, 1)
+            cv2.putText(region_img, "%.3f" % m.getScore(), (pt[0], pt[1] + h),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1, bl, 2, cv2.LINE_AA)
 
         matches = list(reversed(sorted(matches)))
 
-        #print(matches)
-        #cv2.imwrite('img1.png', region_img)
-        #cv2.imwrite('img2.png', target_img)
-        #cv2.imwrite('img3.png', res * 255)
-        #cv2.imwrite('img.png', img_rgb)
+        if matches:
+            from pprint import pprint
+            pprint(matches)
 
+            # cv2.imshow('region', region_img)
+            # cv2.imshow('target', target_img)
+            # cv2.imshow('matches', res)
+            # cv2.waitKey(0)
+            # cv2.destroyAllWindows()
+
+        # cv2.imwrite('img1.png', region_img)
+        # cv2.imwrite('img2.png', target_img)
+        # cv2.imwrite('img3.png', res * 255)
+        # cv2.imwrite('img.png', img_rgb)
+
+        log.debug(
+            "Searching for %r within %r: %d matches [%.3fs]",
+            target, img, len(matches), time() - _start
+        )
         if not matches:
             raise FindFailed()
         self._last_matches = matches
         return matches
 
     def wait(self, target, seconds=None) -> 'Match':
-        if seconds is None:
-            seconds = self.autoWaitTimeout
-        while seconds >= 0:
+        until = time() + (seconds or self.autoWaitTimeout)
+        while True:
             x = self.find(target)
             if x:
                 return x
+            if time() > until:
+                break
             sleep(1)
-            seconds -= 1
 
         raise FindFailed()
 
     def waitVanish(self, target, seconds=None) -> bool:
-        warnings.warn('Region.waitVanish(%r, %r) not implemented' % (target, seconds))  # FIXME
+        until = time() + (seconds or self.autoWaitTimeout)
+        while True:
+            if not self.find(target):
+                return True
+            if time() > until:
+                break
+            sleep(1)
         return False
 
     def exists(self, target, seconds=None) -> 'Match':
@@ -198,11 +249,11 @@ class Region(Rectangle):
 
     def _toLocation(self, target):
         if isinstance(target, str):
-            target = Pattern(str)
+            target = Pattern(target)
         if isinstance(target, Pattern):
             target = self.find(target)
         if isinstance(target, Rectangle):  # Includes Match and Region
-            target = target.getCenter()
+            target = target.getTarget()
         if isinstance(target, Location):
             return target
 

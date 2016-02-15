@@ -1,3 +1,6 @@
+"""
+http://doc.sikuli.org/finder.html
+"""
 
 from .match import Match
 

@@ -1,3 +1,7 @@
+"""
+http://doc.sikuli.org/screen.html
+"""
+
 import tempfile
 import warnings
 
@@ -12,13 +16,16 @@ class Screen(Region):
         super().__init__(Rectangle(x, y, w, h))
         self.id = id_
 
-    def getNumberScreens(self) -> int:
+    @staticmethod
+    def getNumberScreens() -> int:
         return Robot.getNumberScreens()
 
     def getBounds(self) -> Rectangle:
         return self.getRect()
 
     def capture(self, rect: Rectangle) -> str:
+        if not rect:
+            rect = self.getBounds()
         fn = tempfile.mktemp(".png")
         img = Robot.capture(rect.getBounds())
         img.save(fn)

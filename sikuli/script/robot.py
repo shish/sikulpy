@@ -1,25 +1,12 @@
-import autopy  # EXT
+import autopy3 as autopy  # EXT
 import pyscreenshot  # EXT
 import warnings
 
 from .image import Image
+from .key import Mouse
 
 import logging
 log = logging.getLogger(__name__)
-
-
-class Key(object):
-    A = 1
-
-
-class KeyModifier(object):
-    pass
-
-
-class Mouse(object):
-    LEFT = 1
-    RIGHT = 2
-    MIDDLE = 3
 
 
 class Robot(object):
@@ -33,16 +20,16 @@ class Robot(object):
     @staticmethod
     def mouseMove(xy):
         log.info("mouseMove(%r)", xy)
-        autopy.mouse.move(xy[0], xy[1])
+        autopy.mouse.move(int(xy[0]), int(xy[1]))
 
     @staticmethod
     def mouseDown(button):
-        log.info("mouseDown(%r)", button)
+        # log.info("mouseDown(%r)", button)
         autopy.mouse.toggle(True, Robot.mouseMap[button])
 
     @staticmethod
     def mouseUp(button):
-        log.info("mouseUp(%r)", button)
+        # log.info("mouseUp(%r)", button)
         autopy.mouse.toggle(False, Robot.mouseMap[button])
 
     @staticmethod
@@ -83,17 +70,17 @@ class Robot(object):
 
     @staticmethod
     def capture(bbox: (int, int, int, int)=None) -> Image:
-        log.info("capture(%r)", bbox)
+        from time import time
+        _start = time()
         bbox2 = (
             bbox[0], bbox[1],
             bbox[0] + bbox[2], bbox[1] + bbox[3]
         )
 
-        #data = autopy.bitmap.capture_screen(bbox)
         data = pyscreenshot.grab(bbox=bbox2)
         if data.size[0] != bbox[2]:
-            log.debug("Captured image is different size than we expected, shrinking")
+            # log.debug("Captured image is different size than we expected, shrinking")
             data = data.resize((data.size[0]//2, data.size[1]//2))
-        #log.info("capture(%r) -> %r", bbox2, data.size)
 
+        log.info("capture(%r) [%.3fs]", bbox, time() - _start)
         return Image(data)

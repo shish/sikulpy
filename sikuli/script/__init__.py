@@ -10,7 +10,8 @@ from .rectangle import Rectangle
 from .region import Region
 from .screen import Screen
 from .settings import Settings
-from .robot import Key, KeyModifier
+from .key import Key, KeyModifier, Mouse
+from .robot import Robot
 
 desktop = Screen(0)
 

@@ -42,11 +42,16 @@ class Rectangle(object):
     def getW(self): return self.w
     def getH(self): return self.h
 
-    def getRect(self):
+    def getRect(self) -> 'Rectangle':
         return Rectangle(self.x, self.y, self.w, self.h)
 
-    def getCenter(self):
+    def getCenter(self) -> Location:
         return Location(self.x + self.w // 2, self.y + self.h // 2)
+
+    def getBounds(self):
+        return self.x, self.y, self.w, self.h
+
+    getTarget = getCenter
 
     def getTopLeft(self): return Location(self.x, self.y)
     def getTopRight(self): return Location(self.x + self.w, self.y)

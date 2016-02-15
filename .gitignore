@@ -3,3 +3,6 @@
 *.sikuli
 java/
 __pycache__/
+*.egg-info
+scripts
+sync.sh

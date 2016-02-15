@@ -4,20 +4,28 @@ This is a project to provide the same API using regular CPython libraries.
 
 The goal is to be able to run any script which works in the Java IDE.
 
-Incompatibilities:
-- Sikuli IDE has an implied "from sikuli import *" at the start; to run with sikulpy, you need to add that explicitly
-
 Dependencies:
-- CPython 3.5 ( https://www.python.org/downloads/ )
-- Pillow (pip install pillow)
-- AutoPy (pip install autopy3)
-- PyScreenshot (pip install pyscreenshot)
-- NumPy ( http://www.lfd.uci.edu/~gohlke/pythonlibs/ )
-- OpenCV ( http://www.lfd.uci.edu/~gohlke/pythonlibs/ )
+- CPython 3.5
+- Pillow (or PIL)
+- AutoPy3
+- PyScreenshot
+- NumPy
+- OpenCV
 
 Windows:
 - https://www.python.org/downloads/
+- Download NumPy and OpenCV .whl files from http://www.lfd.uci.edu/~gohlke/pythonlibs/
 - pip install pillow autopy3 pyscreenshot *.whl
-- Download NumPy and OpenCV from http://www.lfd.uci.edu/~gohlke/pythonlibs/
+
+OSX:
+```
+$ git clone https://github.com/shish/sikulpy
+$ cd sikulpy
+$ virtualenv-3.5 .env
+$ . .env/bin/activate
+$ CFLAGS="-I/opt/local/include -L/opt/local/lib" pip install https://github.com/Riamse/autopy3/archive/12587da69a2b196e5a964c66246a80831f333de7.zip
+$ pip install -e ./
+$ sikulpy ~/Documents/sikuli/foo.sikuli
+```
 
 [1] http://www.sikulix.com/
