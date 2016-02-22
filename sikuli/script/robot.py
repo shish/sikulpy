@@ -1,12 +1,16 @@
 import autopy3 as autopy  # EXT
 import pyscreenshot  # EXT
 import warnings
+from time import sleep
+import platform
+import subprocess
 
 from .image import Image
 from .key import Mouse
 
 import logging
 log = logging.getLogger(__name__)
+PLATFORM = platform.system()
 
 
 class Robot(object):
@@ -21,6 +25,7 @@ class Robot(object):
     def mouseMove(xy):
         log.info("mouseMove(%r)", xy)
         autopy.mouse.move(int(xy[0]), int(xy[1]))
+        sleep(0.1)
 
     @staticmethod
     def mouseDown(button):
@@ -84,3 +89,24 @@ class Robot(object):
 
         log.info("capture(%r) [%.3fs]", bbox, time() - _start)
         return Image(data)
+
+    # window
+    @staticmethod
+    def focus(application):
+        if PLATFORM == "Darwin":
+            # FIXME: we don't want to hard-code 'Chrome' as the app, and
+            # we want 'window title contains X' rather than 'is X'
+            script = b"""
+set theTitle to "%s"
+tell application "System Events"
+    tell process "Chrome"
+        set frontmost to true
+        perform action "AXRaise" of (windows whose title is theTitle)
+    end tell
+end tell
+""" % application.encode('ascii')
+            subprocess.run("osascript", input=script, shell=True)
+        #elif PLATFORM == "Linux":
+        #    subprocess.run("xdotool --search %s windowactivate" % application, shell=True)
+        else:
+            warnings.warn('App.focus(%r) not implemented for %r' % (application, PLATFORM))  # FIXME

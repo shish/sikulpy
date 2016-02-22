@@ -1,10 +1,7 @@
 import warnings
-import platform
-import subprocess
 
 from .region import Region
-
-PLATFORM = platform.system()
+from .robot import Robot
 
 
 class App(object):
@@ -14,21 +11,7 @@ class App(object):
 
     @staticmethod
     def focus(application=None) -> 'App':
-        if PLATFORM == "Darwin":
-            # FIXME: we don't want to hard-code 'Chrome' as the app, and
-            # we want 'window title contains X' rather than 'is X'
-            script = b"""
-set theTitle to "%s"
-tell application "System Events"
-    tell process "Chrome"
-        set frontmost to true
-        perform action "AXRaise" of (windows whose title is theTitle)
-    end tell
-end tell
-""" % application.encode('ascii')
-            subprocess.run("osascript", input=script, shell=True)
-        else:
-            warnings.warn('App.focus(%r) not implemented for %r' % (application, PLATFORM))  # FIXME
+        Robot.focus(application)
 
     @staticmethod
     def close(application=None):

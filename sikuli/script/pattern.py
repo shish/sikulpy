@@ -21,18 +21,18 @@ class Pattern(object):
 
         self.similarity = 0.7
         self.img = Image(filename)
-        self.targetOffset = Location(self.img.w/2, self.img.h/2)
+        self._targetOffset = Location(0, 0)  # relative to center
 
     def __repr__(self) -> str:
-        if self.targetOffset == Location(self.img.w/2, self.img.h/2):
+        if self._targetOffset == Location(0, 0):
             return "Pattern(%r)" % self.img
         else:
-            return "Pattern(%r, %r)" % (self.img, self.targetOffset)
+            return "Pattern(%r, %r)" % (self.img, self._targetOffset)
 
     def _copy(self):
         p = Pattern(self.filename)
         p.similarity = self.similarity
-        p.targetOffset = self.targetOffset
+        p._targetOffset = self._targetOffset
         return p
 
     def similar(self, similarity: float):
@@ -72,7 +72,7 @@ class Pattern(object):
         :return: a new pattern object
         """
         p = self._copy()
-        p.targetOffset = p.targetOffset.offset(dx, dy)
+        p._targetOffset = p._targetOffset.offset(dx, dy)
         return p
 
     def getFilename(self) -> str:
@@ -89,4 +89,4 @@ class Pattern(object):
 
         :return: a Location object as the target offset
         """
-        return self.targetOffset
+        return self._targetOffset

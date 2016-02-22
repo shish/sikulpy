@@ -10,6 +10,7 @@ from .location import Location
 class Match(Region):
     def __init__(self, rect: Rectangle, sim: float, targetOffset: Location):
         super().__init__(rect)
+        self._name = None
         self._score = sim
         self._targetOffset = targetOffset
 
@@ -36,5 +37,5 @@ class Match(Region):
     def __repr__(self):
         return "%s(%r, %.3f)" % (
             self.__class__.__name__,
-            self.getRect(), self.getScore()
+            self._name or self.getRect(), self.getScore()
         )

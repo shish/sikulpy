@@ -23,8 +23,7 @@ $ git clone https://github.com/shish/sikulpy
 $ cd sikulpy
 $ virtualenv-3.5 .env
 $ . .env/bin/activate
-$ CFLAGS="-I/opt/local/include -L/opt/local/lib" pip install https://github.com/Riamse/autopy3/archive/12587da69a2b196e5a964c66246a80831f333de7.zip
-$ pip install -e ./
+$ CFLAGS="-I/opt/local/include -L/opt/local/lib" pip install -e ./
 $ sikulpy ~/Documents/sikuli/foo.sikuli
 ```
 

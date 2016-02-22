@@ -39,6 +39,7 @@ class Region(Rectangle):
         # FIXME: unofficial
         self.recycle_capture = False
         self._last_capture = None
+        self._debug = False
 
     # attributes
 
@@ -139,7 +140,7 @@ class Region(Rectangle):
 
         target_img = np.array(target.img.img.convert('RGB'))
         target_img = cv2.cvtColor(target_img, cv2.COLOR_BGR2GRAY)
-        w, h = target_img.shape[::-1]
+        tw, th = target_img.shape[::-1]
 
         res = cv2.matchTemplate(region_img, target_img, cv2.TM_CCOEFF_NORMED)
         loc = np.where(res >= target.similarity)
@@ -148,38 +149,41 @@ class Region(Rectangle):
             found_better = False
             for x in [-1, 0, +1]:
                 for y in [-1, 0, +1]:
-                    if res[pt[1]+y, pt[0]+x] > res[pt[1], pt[0]]:
-                        found_better = True
+                    try:
+                        if res[pt[1]+y, pt[0]+x] > res[pt[1], pt[0]]:
+                            found_better = True
+                    except IndexError:
+                        pass
             if found_better:
                 continue
 
             m = Match(
-                Rectangle(self.x + int(pt[0]), self.y + int(pt[1]), w, h),
+                Rectangle(self.x + int(pt[0]), self.y + int(pt[1]), tw, th),
                 float(res[pt[1], pt[0]]),
-                target.targetOffset
+                target.getTargetOffset()
             )
+            m._name = target.getFilename()
             matches.append(m)
 
             bl = (0, 0, 0)
             wh = (255, 255, 255)
-            cv2.rectangle(region_img, pt, (pt[0] + w, pt[1] + h), bl, 4)
-            cv2.rectangle(region_img, pt, (pt[0] + w, pt[1] + h), wh, 3)
-            cv2.rectangle(region_img, pt, (pt[0] + w, pt[1] + h), bl, 2)
-            cv2.rectangle(region_img, pt, (pt[0] + w, pt[1] + h), wh, 1)
-            cv2.putText(region_img, "%.3f" % m.getScore(), (pt[0], pt[1] + h),
+            cv2.rectangle(region_img, pt, (pt[0] + tw, pt[1] + th), bl, 4)
+            cv2.rectangle(region_img, pt, (pt[0] + tw, pt[1] + th), wh, 3)
+            cv2.rectangle(region_img, pt, (pt[0] + tw, pt[1] + th), bl, 2)
+            cv2.rectangle(region_img, pt, (pt[0] + tw, pt[1] + th), wh, 1)
+            cv2.putText(region_img, "%.3f" % m.getScore(), (pt[0], pt[1] + th),
                         cv2.FONT_HERSHEY_SIMPLEX, 1, bl, 2, cv2.LINE_AA)
 
         matches = list(reversed(sorted(matches)))
 
-        if matches:
-            from pprint import pprint
+        from pprint import pprint
+        if self._debug and matches:
             pprint(matches)
-
-            # cv2.imshow('region', region_img)
+            cv2.imshow('region', region_img)
             # cv2.imshow('target', target_img)
             # cv2.imshow('matches', res)
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
 
         # cv2.imwrite('img1.png', region_img)
         # cv2.imwrite('img2.png', target_img)
