@@ -1,6 +1,7 @@
 from sikuli import *
 import sys
 import argparse
+import logging
 
 Settings.ImagePaths = ["."]
 
