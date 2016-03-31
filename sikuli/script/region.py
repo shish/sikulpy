@@ -37,9 +37,14 @@ class Region(Rectangle):
         self._throwException = True
 
         # FIXME: unofficial
-        self.recycle_capture = False
-        self._last_capture = None
+        self._frozen = None
         self._debug = False
+
+    def freeze(self):
+        self._frozen = Robot.capture((self.x, self.y, self.w, self.h))
+
+    def thaw(self):
+        self._frozen = None
 
     # attributes
 
@@ -123,13 +128,7 @@ class Region(Rectangle):
         if not isinstance(target, Pattern):
             target = Pattern(target)
 
-        if self.recycle_capture and self._last_capture:
-            log.debug("Recycling capture")
-            img = self._last_capture
-            self.recycle_capture = False
-        else:
-            img = Robot.capture((self.x, self.y, self.w, self.h))
-            self._last_capture = img
+        img = self._frozen or Robot.capture((self.x, self.y, self.w, self.h))
         matches = []
 
         from .match import Match
@@ -171,19 +170,20 @@ class Region(Rectangle):
             cv2.rectangle(region_img, pt, (pt[0] + tw, pt[1] + th), wh, 3)
             cv2.rectangle(region_img, pt, (pt[0] + tw, pt[1] + th), bl, 2)
             cv2.rectangle(region_img, pt, (pt[0] + tw, pt[1] + th), wh, 1)
-            cv2.putText(region_img, "%.3f" % m.getScore(), (pt[0], pt[1] + th),
+            cv2.putText(region_img, "%.2f" % m.getScore(), (pt[0], pt[1] + th),
                         cv2.FONT_HERSHEY_SIMPLEX, 1, bl, 2, cv2.LINE_AA)
 
         matches = list(reversed(sorted(matches)))
 
         from pprint import pprint
-        if self._debug and matches:
+        if self._debug:
             pprint(matches)
-            cv2.imshow('region', region_img)
-            # cv2.imshow('target', target_img)
-            # cv2.imshow('matches', res)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
+            try:
+                cv2.imshow('region', region_img)
+                cv2.waitKey(0)
+                cv2.destroyAllWindows()
+            except:  # cv2 build with --no-gui
+                cv2.imwrite('region.png', region_img)
 
         # cv2.imwrite('img1.png', region_img)
         # cv2.imwrite('img2.png', target_img)
@@ -335,8 +335,8 @@ class Region(Rectangle):
 
     def mouseMove(self, target):
         loc = self._toLocation(self._targetOrLast(target))
-        if Settings.MouseMoveDelay:
-            sleep(Settings.MouseMoveDelay)
+        if Settings.MoveMouseDelay:
+            sleep(Settings.MoveMouseDelay)
         Robot.mouseMove((loc.x, loc.y))
 
     def wheel(self, target, button, steps=1):

@@ -1,5 +1,5 @@
 try:
     from .script import *
-except ImportError:
-    pass
+except ImportError as e:
+    print("Error importing sikuli: %s" % e)
 from .version import *

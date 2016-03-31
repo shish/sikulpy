@@ -65,7 +65,10 @@ class Robot(object):
     # screen
     @staticmethod
     def getNumberScreens() -> int:
-        warnings.warn('Robot.getNumberScreens() not implemented')  # FIXME
+        if PLATFORM == "Linux":
+            return 1  # hax for my personal server to not spam warnings...
+        else:
+            warnings.warn('Robot.getNumberScreens() not implemented')  # FIXME
         return 1
 
     @staticmethod
@@ -106,7 +109,15 @@ tell application "System Events"
 end tell
 """ % application.encode('ascii')
             subprocess.run("osascript", input=script, shell=True)
-        #elif PLATFORM == "Linux":
-        #    subprocess.run("xdotool --search %s windowactivate" % application, shell=True)
+        elif PLATFORM == "Linux":
+            # subprocess.run(
+            #   "xdotool --search %s windowactivate" % application,
+            #   shell=True
+            # )
+            p = subprocess.Popen(
+                "xdotool search --name '%s' windowactivate" % application,
+                shell=True
+            )
+            p.wait()
         else:
             warnings.warn('App.focus(%r) not implemented for %r' % (application, PLATFORM))  # FIXME

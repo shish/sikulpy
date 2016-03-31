@@ -28,7 +28,10 @@ setup(
         "sikuli.script",
     ],
     entry_points={
-        'console_scripts': ['sikulpy = sikuli.run:main'],
+        'console_scripts': [
+            'sikulpy = sikuli.run:main',
+            'sikulpy-find = sikuli.find:main',
+        ],
         'gui_script': []
     },
 )
