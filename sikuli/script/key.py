@@ -2,17 +2,20 @@
 http://doc.sikuli.org/keys.html
 """
 
+import autopy3 as autopy  # EXT
+
 
 class Key(object):
-    pass
+    ENTER = '\n'
 
 
 class KeyModifier(object):
-    # FIXME: define these
-    CTRL = 0
-    SHIFT = 0
-    ALT = 0
-    META = 0
+    # these differ based on platform
+    CTRL = autopy.key.MOD_CONTROL
+    SHIFT = autopy.key.MOD_SHIFT
+    ALT = autopy.key.MOD_ALT
+    META = autopy.key.MOD_META
+
     CMD = META
     WIN = META
 
