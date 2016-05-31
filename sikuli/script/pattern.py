@@ -4,6 +4,7 @@ http://doc.sikuli.org/pattern.html
 
 from .location import Location
 from .image import Image
+from .settings import Settings
 
 
 class Pattern(object):
@@ -19,7 +20,7 @@ class Pattern(object):
         """
         self.filename = filename
 
-        self.similarity = 0.7
+        self.similarity = Settings.MinSimilarity
         self.img = Image(filename)
         self._targetOffset = Location(0, 0)  # relative to center
 
@@ -72,7 +73,10 @@ class Pattern(object):
         :return: a new pattern object
         """
         p = self._copy()
-        p._targetOffset = p._targetOffset.offset(dx, dy)
+        p._targetOffset = p._targetOffset.offset(
+            dx*Settings.Scale,
+            dy*Settings.Scale
+        )
         return p
 
     def getFilename(self) -> str:
