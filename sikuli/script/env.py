@@ -3,6 +3,7 @@ import warnings
 
 from .location import Location
 from .robot import Robot
+from .sikulpy import unofficial
 
 
 class Env(object):
@@ -30,6 +31,11 @@ class Env(object):
     @staticmethod
     def getClipboard() -> str:
         return Robot.getClipboard()
+
+    @staticmethod
+    @unofficial
+    def putClipboard(text):
+        return Robot.putClipboard(text)
 
     @staticmethod
     def isLockOn(key) -> bool:
