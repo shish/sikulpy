@@ -15,6 +15,22 @@ logging.getLogger("easyprocess").setLevel(logging.WARNING)
 logging.getLogger("pyscreenshot").setLevel(logging.WARNING)
 
 
+try:
+    import pydevd
+    import signal
+
+    def handle_hup(signum, frame):
+        pydevd.settrace(
+            'localhost',
+            port=1444,
+            stdoutToServer=True,
+            stderrToServer=True
+        )
+    signal.signal(signal.SIGHUP, handle_hup)
+except ImportError:
+    pass
+
+
 def reload(module):
     logging.debug("Stub reload(%r)" % module)
 
