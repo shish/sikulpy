@@ -7,6 +7,7 @@ import subprocess
 
 from .image import Image
 from .key import Mouse
+from .sikulpy import unofficial
 
 import logging
 log = logging.getLogger(__name__)
@@ -53,9 +54,36 @@ class Robot(object):
         autopy.key.toggle(key, False)
 
     @staticmethod
+    @unofficial
+    def type(text, modifiers):
+        log.info("type(%r, %r)", text, modifiers)
+        for letter in text:
+            autopy.key.tap(letter, modifiers or 0)
+
+    @staticmethod
     def getClipboard() -> str:
-        warnings.warn('Robot.getClipboard() not implemented')  # FIXME
-        return ""
+        if PLATFORM == "Linux":
+            return subprocess.Popen(
+                "xclip -o",
+                shell=True,
+                stdout=subprocess.PIPE
+            ).stdout.read().decode("utf8")
+        else:
+            warnings.warn('Robot.getClipboard() not implemented')  # FIXME
+            return ""
+
+    @staticmethod
+    @unofficial
+    def putClipboard(text):
+        if PLATFORM == "Linux":
+            p = subprocess.run(
+                "xclip",
+                input=text,
+                shell=True,
+            )
+            p.wait()
+        else:
+            warnings.warn('Robot.putClipboard() not implemented')  # FIXME
 
     @staticmethod
     def isLockOn(key) -> bool:

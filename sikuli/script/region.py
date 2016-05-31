@@ -16,6 +16,8 @@ from .location import Location
 from .pattern import Pattern
 from .env import Env
 from .robot import Mouse, Robot
+from .key import KeyModifier
+from .sikulpy import unofficial
 
 from .exc import FindFailed
 
@@ -40,9 +42,11 @@ class Region(Rectangle):
         self._frozen = None
         self._debug = False
 
+    @unofficial
     def freeze(self):
         self._frozen = Robot.capture((self.x, self.y, self.w, self.h))
 
+    @unofficial
     def thaw(self):
         self._frozen = None
 
@@ -261,6 +265,30 @@ class Region(Rectangle):
         if isinstance(target, Location):
             return target
 
+    # mouse
+
+    def mouseDown(self, button):
+        Robot.mouseDown(button)
+
+    def mouseUp(self, button):
+        Robot.mouseUp(button)
+
+    def mouseMove(self, target):
+        loc = self._toLocation(self._targetOrLast(target))
+        if Settings.MoveMouseDelay:
+            sleep(Settings.MoveMouseDelay)
+        pt = loc.x, loc.y
+        Robot.mouseMove(pt)
+        return pt
+
+    def wheel(self, target, button, steps=1):
+        self.mouseMove(target)
+        for n in range(0, steps):
+            self.mouseDown(button)
+            sleep(0.1)
+            self.mouseUp(button)
+            sleep(0.1)
+
     def click(self, target=None, modifiers=None) -> int:
         # FIXME: modifiers
         self.mouseMove(target)
@@ -304,54 +332,55 @@ class Region(Rectangle):
 
     def drag(self, target=None):
         self.mouseMove(target)
+        sleep(0.5)
         self.mouseDown(Mouse.LEFT)
 
     def dropAt(self, target=None, delay=None):
         self.mouseMove(target)
+        sleep(0.5)
         if delay:
             sleep(delay)
         self.mouseUp(Mouse.LEFT)
 
-    def type(self, target=None, text=None, modifiers=None):
-        target = self._targetOrLast(target)
-        warnings.warn('Region.type(%r, %r, %r) not implemented' % (target, text, modifiers))  # FIXME
-
-    def paste(self, target=None, text=None, modifiers=None):
-        self.click(target)
-        self.type(Env.getClipboard())
-
-    # OCR
-
-    def text(self) -> str:
-        warnings.warn('Region.text() not implemented')  # FIXME
-
-    # low-level mouse & keyboard
-
-    def mouseDown(self, button):
-        Robot.mouseDown(button)
-
-    def mouseUp(self, button):
-        Robot.mouseUp(button)
-
-    def mouseMove(self, target):
-        loc = self._toLocation(self._targetOrLast(target))
-        if Settings.MoveMouseDelay:
-            sleep(Settings.MoveMouseDelay)
-        Robot.mouseMove((loc.x, loc.y))
-
-    def wheel(self, target, button, steps=1):
-        self.mouseMove(target)
-        for n in range(0, steps):
-            self.mouseDown(button)
-            sleep(0.1)
-            self.mouseUp(button)
-            sleep(0.1)
+    # keyboard
 
     def keyUp(self, key):
         Robot.keyUp(key)
 
     def keyDown(self, key):
         Robot.keyDown(key)
+
+    def type(self, target=None, text=None, modifiers=None):
+        if target:
+            self.click(target)
+
+        Robot.type(text, modifiers)
+
+    def paste(self, target=None, text=None):
+        """
+        Paste the text at a click point.
+
+        Parameters:
+          PSMRL – a pattern, a string, a match, a region or a location that
+                  evaluates to a click point.
+          modifiers – one or more key modifiers
+        Returns:
+          the number 1 if the operation could be performed, otherwise 0
+          (integer null), which means, that because of some reason, it
+          was not possible or the click could be performed (in case of
+          PS may be not Found).
+
+        :param target:
+        :param text:
+        :return:
+        """
+        Env.putClipboard(text)
+        self.type(target, "v", KeyModifier.CTRL)
+
+    # OCR
+
+    def text(self) -> str:
+        warnings.warn('Region.text() not implemented')  # FIXME
 
     # error handling
 
