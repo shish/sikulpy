@@ -15,22 +15,6 @@ logging.getLogger("easyprocess").setLevel(logging.WARNING)
 logging.getLogger("pyscreenshot").setLevel(logging.WARNING)
 
 
-try:
-    import pydevd
-    import signal
-
-    def handle_hup(signum, frame):
-        pydevd.settrace(
-            'localhost',
-            port=1444,
-            stdoutToServer=True,
-            stderrToServer=True
-        )
-    signal.signal(signal.SIGHUP, handle_hup)
-except ImportError:
-    pass
-
-
 def reload(module):
     logging.debug("Stub reload(%r)" % module)
 
@@ -53,11 +37,19 @@ def main():
     # FIXME: sikuli CLI compat
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--debug', default=False, action='store_true')
+    parser.add_argument('-D', '--debugger', default=False, action='store_true')
     parser.add_argument('-s', '--scale', type=float, default=1.0)
     parser.add_argument('script')
     args = parser.parse_args()
     if args.debug:
         logging.getLogger("sikuli").setLevel(logging.DEBUG)
+    if args.debugger:
+        try:
+            import pudb
+            pudb.set_interrupt_handler()
+        except ImportError:
+            pass
+
     Settings.Scale = args.scale
     run(args.script)
     return 0
