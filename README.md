@@ -15,9 +15,9 @@ Dependencies:
 Windows:
 - https://www.python.org/downloads/
 - Download NumPy and OpenCV .whl files from http://www.lfd.uci.edu/~gohlke/pythonlibs/
-- pip install pillow autopy3 pyscreenshot *.whl
+- `pip install pillow autopy3 pyscreenshot *.whl`
 
-OSX:
+OSX / Linux:
 ```
 $ git clone https://github.com/shish/sikulpy
 $ cd sikulpy
