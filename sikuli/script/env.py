@@ -16,32 +16,53 @@ class Env(object):
         warnings.warn('Env.removeHotKey(%r, %r) not implemented' % (key, modifiers))  # FIXME
 
     @staticmethod
-    def getOS() -> str:
+    def getOS():
+        """
+        :rtype: str
+        """
         # FIXME: check that this matches sikuli's OS names
         return platform.system()
 
     @staticmethod
-    def getOSVersion() -> str:
+    def getOSVersion():
+        """
+        :rtype: str
+        """
         warnings.warn('Env.getOSVersion() not implemented')  # FIXME
 
     @staticmethod
-    def getSikuliVersion() -> str:
+    def getSikuliVersion():
+        """
+        :rtype: str
+        """
         return "sikulpy 0.0"
 
     @staticmethod
-    def getClipboard() -> str:
+    def getClipboard():
+        """
+        :rtype: str
+        """
         return Robot.getClipboard()
 
     @staticmethod
     @unofficial
     def putClipboard(text):
+        """
+        :param str text:
+        """
         return Robot.putClipboard(text)
 
     @staticmethod
-    def isLockOn(key) -> bool:
+    def isLockOn(key):
+        """
+        :rtype: bool
+        """
         return Robot.isLockOn(key)
 
     @staticmethod
-    def getMouseLocation() -> Location:
+    def getMouseLocation():
+        """
+        :rtype: Location
+        """
         x, y = Robot.getMouseLocation()
         return Location(x, y)

@@ -1,9 +1,14 @@
-import autopy3 as autopy  # EXT
+import sys
 import pyscreenshot  # EXT
 import warnings
 from time import sleep
 import platform
 import subprocess
+
+if sys.version_info >= (3,0):
+    import autopy3 as autopy  # EXT
+else:
+    import autopy  # EXT
 
 from .image import Image
 from .key import Mouse
@@ -24,6 +29,9 @@ class Robot(object):
     # mouse
     @staticmethod
     def mouseMove(xy):
+        """
+        :param (int, int) xy:
+        """
         log.info("mouseMove(%r)", xy)
         autopy.mouse.move(int(xy[0]), int(xy[1]))
         sleep(0.1)
@@ -39,7 +47,10 @@ class Robot(object):
         autopy.mouse.toggle(False, Robot.mouseMap[button])
 
     @staticmethod
-    def getMouseLocation() -> (int, int):
+    def getMouseLocation():
+        """
+        :rtype: (int, int)
+        """
         warnings.warn('Robot.getMouseLocation() not implemented')  # FIXME
 
     # keyboard
@@ -61,7 +72,10 @@ class Robot(object):
             autopy.key.tap(letter, modifiers or 0)
 
     @staticmethod
-    def getClipboard() -> str:
+    def getClipboard():
+        """
+        :rtype: str
+        """
         if PLATFORM == "Linux":
             return subprocess.Popen(
                 "xclip -o",
@@ -75,6 +89,9 @@ class Robot(object):
     @staticmethod
     @unofficial
     def putClipboard(text):
+        """
+        :param str text:
+        """
         if PLATFORM == "Linux":
             p = subprocess.run(
                 "xclip",
@@ -86,13 +103,20 @@ class Robot(object):
             warnings.warn('Robot.putClipboard() not implemented')  # FIXME
 
     @staticmethod
-    def isLockOn(key) -> bool:
+    def isLockOn(key):
+        """
+        :param key:
+        :rtype: bool
+        """
         warnings.warn('Robot.isLockOn(%r) not implemented' % key)  # FIXME
         return False
 
     # screen
     @staticmethod
-    def getNumberScreens() -> int:
+    def getNumberScreens():
+        """
+        :rtype: int
+        """
         if PLATFORM == "Linux":
             return 1  # hax for my personal server to not spam warnings...
         else:
@@ -100,12 +124,19 @@ class Robot(object):
         return 1
 
     @staticmethod
-    def screenSize() -> (int, int, int, int):
+    def screenSize():
+        """
+        :rtype: (int, int, int, int)
+        """
         w, h = autopy.screen.get_size()
         return 0, 0, w, h
 
     @staticmethod
-    def capture(bbox: (int, int, int, int)=None) -> Image:
+    def capture(bbox=None):
+        """
+        :param (int, int, int, int) bbox:
+        :rtype: Image
+        """
         from time import time
         _start = time()
         bbox2 = (
@@ -124,6 +155,9 @@ class Robot(object):
     # window
     @staticmethod
     def focus(application):
+        """
+        :param str application:
+        """
         if PLATFORM == "Darwin":
             # FIXME: we don't want to hard-code 'Chrome' as the app, and
             # we want 'window title contains X' rather than 'is X'

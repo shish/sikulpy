@@ -2,7 +2,11 @@
 http://doc.sikuli.org/keys.html
 """
 
-import autopy3 as autopy  # EXT
+import sys
+if sys.version_info >= (3,0):
+    import autopy3 as autopy  # EXT
+else:
+    import autopy  # EXT
 
 
 class Key(object):

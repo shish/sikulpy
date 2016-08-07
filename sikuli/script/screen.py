@@ -11,19 +11,32 @@ from .robot import Robot
 
 
 class Screen(Region):
-    def __init__(self, id_: int):
+    def __init__(self, id_):
+        """
+        :param int id_:
+        """
         x, y, w, h = Robot.screenSize()
         super().__init__(Rectangle(x, y, w, h))
         self.id = id_
 
     @staticmethod
-    def getNumberScreens() -> int:
+    def getNumberScreens():
+        """
+        :rtype: int
+        """
         return Robot.getNumberScreens()
 
-    def getBounds(self) -> Rectangle:
+    def getBounds(self):
+        """
+        :rtype: Rectangle
+        """
         return self.getRect()
 
-    def capture(self, rect: Rectangle) -> str:
+    def capture(self, rect):
+        """
+        :param Rectangle rect:
+        :rtype: str
+        """
         if not rect:
             rect = self.getBounds()
         fn = tempfile.mktemp(".png")
@@ -31,6 +44,10 @@ class Screen(Region):
         img.save(fn)
         return fn
 
-    def selectRegion(self, text=None) -> Region:
+    def selectRegion(self, text=None):
+        """
+        :param str text:
+        :rtype: Region
+        """
         # interactive selection, with label
         warnings.warn('Screen.selectRegion(%r) not implemented' % text)  # FIXME

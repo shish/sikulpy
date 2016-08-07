@@ -52,38 +52,67 @@ class Region(Rectangle):
 
     # attributes
 
-    def setAutoWaitTimeout(self, t: float):
+    def setAutoWaitTimeout(self, t):
+        """
+        :param float t:
+        """
         self.autoWaitTimeout = t
 
-    def getAutoWaitTimeout(self) -> float:
+    def getAutoWaitTimeout(self):
+        """
+        :rtype: float
+        """
         return self.autoWaitTimeout
 
-    def getScreen(self) -> 'Screen':
+    def getScreen(self):
+        """
+        :rtype: Screen
+        """
         return self._screen
 
-    def getLastMatch(self) -> 'Match':
+    def getLastMatch(self):
+        """
+        :rtype: Match
+        """
         return self.getLastMatches()[0]
 
-    def getLastMatches(self) -> ['Match']:
+    def getLastMatches(self):
+        """
+        :rtype: list[Match]
+        """
         return self._last_matches
 
     # extending a region
 
     def _copy(self):
+        """
+        :rtype: Region
+        """
         r = Region(self)
         r._screen = self._screen
         return r
 
-    def offset(self, l: Location) -> 'Region':
+    def offset(self, l):
+        """
+        :param Location l:
+        :rtype: Region
+        """
         r = self._copy()
         r.x += l.x
         r.y += l.y
         return r
 
     def inside(self):
+        """
+        :rtype: Region
+        """
         return self
 
     def nearby(self, range_=50):
+        """
+        :param int range_:
+        :rtype: Region
+        """
         r = self._copy()
         r.x -= range_
         r.y -= range_
@@ -92,6 +121,10 @@ class Region(Rectangle):
         return r
 
     def above(self, range_=None):
+        """
+        :param int range_:
+        :rtype: Region
+        """
         if not range_:
             range_ = self.y - self._screen.y
         r = self._copy()
@@ -100,6 +133,10 @@ class Region(Rectangle):
         return r
 
     def below(self, range_=None):
+        """
+        :param int range_:
+        :rtype: Region
+        """
         if not range_:
             range_ = self._screen.h - (self.y + self.h)
         r = self._copy()
@@ -108,6 +145,10 @@ class Region(Rectangle):
         return r
 
     def left(self, range_=None):
+        """
+        :param int range_:
+        :rtype: Region
+        """
         if not range_:
             range_ = self.x - self._screen.x
         r = self._copy()
@@ -116,6 +157,10 @@ class Region(Rectangle):
         return r
 
     def right(self, range_=None):
+        """
+        :param int range_:
+        :rtype: Region
+        """
         if not range_:
             range_ = self._screen.w - (self.x + self.w)
         r = self._copy()
@@ -125,10 +170,18 @@ class Region(Rectangle):
 
     # finding
 
-    def find(self, target) -> 'Match':
+    def find(self, target):
+        """
+        :param Pattern|str target:
+        :rtype: Match
+        """
         return self.findAll(target)[0]
 
-    def findAll(self, target) -> ['Match']:
+    def findAll(self, target):
+        """
+        :param Pattern|str target:
+        :rtype: list[Match]
+        """
         if not isinstance(target, Pattern):
             target = Pattern(target)
 
@@ -203,7 +256,12 @@ class Region(Rectangle):
         self._last_matches = matches
         return matches
 
-    def wait(self, target, seconds=None) -> 'Match':
+    def wait(self, target, seconds=None):
+        """
+        :param Pattern|str target:
+        :param float seconds:
+        :rtype: Match
+        """
         until = time() + (seconds or self.autoWaitTimeout)
         while True:
             x = self.find(target)
@@ -215,7 +273,12 @@ class Region(Rectangle):
 
         raise FindFailed()
 
-    def waitVanish(self, target, seconds=None) -> bool:
+    def waitVanish(self, target, seconds=None):
+        """
+        :param Pattern|str target:
+        :param float seconds:
+        :rtype: bool
+        """
         until = time() + (seconds or self.autoWaitTimeout)
         while True:
             if not self.find(target):
@@ -225,7 +288,12 @@ class Region(Rectangle):
             sleep(1)
         return False
 
-    def exists(self, target, seconds=None) -> 'Match':
+    def exists(self, target, seconds=None):
+        """
+        :param Pattern|str target:
+        :param float seconds:
+        :rtype: Match
+        """
         try:
             return self.wait(target, seconds)
         except FindFailed:
@@ -289,7 +357,12 @@ class Region(Rectangle):
             self.mouseUp(button)
             sleep(0.1)
 
-    def click(self, target=None, modifiers=None) -> int:
+    def click(self, target=None, modifiers=None):
+        """
+        :param Pattern|str target:
+        :param int modifiers:
+        :rtype: int
+        """
         # FIXME: modifiers
         self.mouseMove(target)
         sleep(1)
@@ -298,7 +371,12 @@ class Region(Rectangle):
         self.mouseUp(Mouse.LEFT)
         return 1  # no. of clicks
 
-    def doubleClick(self, target=None, modifiers=None) -> int:
+    def doubleClick(self, target=None, modifiers=None):
+        """
+        :param Pattern|str target:
+        :param int modifiers:
+        :rtype: int
+        """
         # FIXME: modifiers
         self.mouseMove(target)
         self.mouseDown(Mouse.LEFT)
@@ -310,7 +388,12 @@ class Region(Rectangle):
         self.mouseUp(Mouse.LEFT)
         return 1  # no. of double clicks
 
-    def rightClick(self, target=None, modifiers=None) -> int:
+    def rightClick(self, target=None, modifiers=None):
+        """
+        :param Pattern|str target:
+        :param int modifiers:
+        :rtype: int
+        """
         # FIXME: modifiers
         self.mouseMove(target)
         self.mouseDown(Mouse.RIGHT)
@@ -361,9 +444,9 @@ class Region(Rectangle):
         Paste the text at a click point.
 
         Parameters:
-          PSMRL – a pattern, a string, a match, a region or a location that
+          PSMRL - a pattern, a string, a match, a region or a location that
                   evaluates to a click point.
-          modifiers – one or more key modifiers
+          modifiers - one or more key modifiers
         Returns:
           the number 1 if the operation could be performed, otherwise 0
           (integer null), which means, that because of some reason, it
@@ -379,7 +462,10 @@ class Region(Rectangle):
 
     # OCR
 
-    def text(self) -> str:
+    def text(self):
+        """
+        :rtype: str
+        """
         warnings.warn('Region.text() not implemented')  # FIXME
 
     # error handling
@@ -391,18 +477,32 @@ class Region(Rectangle):
     def getFindFailedResponse(self):
         warnings.warn('Region.getFindFailedResponse() not implemented')  # FIXME
 
-    def setThrowException(self, te: bool):
+    def setThrowException(self, te):
+        """
+        :param bool te:
+        """
         self._throwException = te
 
-    def getThrowException(self) -> bool:
+    def getThrowException(self):
+        """
+        :rtype: bool
+        """
         return self._throwException
 
     # special
 
-    def getRegionFromPSRM(self, target) -> 'Region':
+    def getRegionFromPSRM(self, target):
+        """
+        :param Pattern|str target:
+        :rtype: Region
+        """
         warnings.warn('Region.getRegionFromPSRM(%r) not implemented' % target)  # FIXME
 
-    def getLocationFromPSRML(self, target) -> Location:
+    def getLocationFromPSRML(self, target):
+        """
+        :param Pattern|str target:
+        :rtype: Location
+        """
         warnings.warn('Region.getLocationFromPSRML(%r) not implemented' % target)  # FIXME
 
 

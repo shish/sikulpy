@@ -1,8 +1,11 @@
 .env
+.env2
 .idea
 *.sikuli
 java/
 __pycache__/
+*.pyc
+*.log
 *.egg-info
 scripts
 sync.sh
