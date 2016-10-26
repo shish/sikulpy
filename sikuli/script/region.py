@@ -41,6 +41,7 @@ class Region(Rectangle):
         # FIXME: unofficial
         self._frozen = None
         self._debug = False
+        self._channel = None
 
     @unofficial
     def freeze(self):
@@ -49,6 +50,10 @@ class Region(Rectangle):
     @unofficial
     def thaw(self):
         self._frozen = None
+
+    @unofficial
+    def setChannel(self, channel):
+        self._channel = channel
 
     # attributes
 
@@ -192,10 +197,16 @@ class Region(Rectangle):
 
         _start = time()
         region_img = np.array(img.img.convert('RGB'))
-        region_img = cv2.cvtColor(region_img, cv2.COLOR_BGR2GRAY)
-
         target_img = np.array(target.img.img.convert('RGB'))
-        target_img = cv2.cvtColor(target_img, cv2.COLOR_BGR2GRAY)
+
+        if self._channel is None:
+            region_img = cv2.cvtColor(region_img, cv2.COLOR_BGR2GRAY)
+            target_img = cv2.cvtColor(target_img, cv2.COLOR_BGR2GRAY)
+        else:
+            region_img = region_img[:,:,self._channel]
+            target_img = target_img[:,:,self._channel]
+
+        _conv = time()
         tw, th = target_img.shape[::-1]
 
         res = cv2.matchTemplate(region_img, target_img, cv2.TM_CCOEFF_NORMED)
@@ -248,8 +259,8 @@ class Region(Rectangle):
         # cv2.imwrite('img.png', img_rgb)
 
         log.debug(
-            "Searching for %r within %r: %d matches [%.3fs]",
-            target, img, len(matches), time() - _start
+            "Searching for %r within %r: %d matches [%.3fs: %.3fs conv]",
+            target, img, len(matches), time() - _start, _conv - _start
         )
         if not matches:
             raise FindFailed()
@@ -341,12 +352,23 @@ class Region(Rectangle):
     def mouseUp(self, button):
         Robot.mouseUp(button)
 
-    def mouseMove(self, target):
-        loc = self._toLocation(self._targetOrLast(target))
-        if Settings.MoveMouseDelay:
-            sleep(Settings.MoveMouseDelay)
-        pt = loc.x, loc.y
+    def mouseMove(self, target, _delay=None):
+        if _delay is None:
+            _delay = Settings.MoveMouseDelay
+        ticks = 10
+
+        p1 = Location(*Robot.getMouseLocation())
+        p2 = self._toLocation(self._targetOrLast(target))
+        if _delay > 0:
+            for tick in range(0, ticks+1):
+                factor = float(tick) / float(ticks)
+                px = p1 + (p2 - p1) * factor
+                Robot.mouseMove(px.getXY())
+                sleep(_delay / ticks)
+
+        pt = p2.getXY()
         Robot.mouseMove(pt)
+        sleep(0.5)
         return pt
 
     def wheel(self, target, button, steps=1):
@@ -365,7 +387,6 @@ class Region(Rectangle):
         """
         # FIXME: modifiers
         self.mouseMove(target)
-        sleep(1)
         self.mouseDown(Mouse.LEFT)
         sleep(0.1)
         self.mouseUp(Mouse.LEFT)
@@ -415,12 +436,10 @@ class Region(Rectangle):
 
     def drag(self, target=None):
         self.mouseMove(target)
-        sleep(0.5)
         self.mouseDown(Mouse.LEFT)
 
     def dropAt(self, target=None, delay=None):
         self.mouseMove(target)
-        sleep(0.5)
         if delay:
             sleep(delay)
         self.mouseUp(Mouse.LEFT)
@@ -513,6 +532,6 @@ class SikuliEvent(object):
         CHANGE = 2
 
     type = Type.APPEAR
-    pattern = None
-    match = None
-    changes = None
+    pattern = None  # type: Any
+    match = None  # type: Match
+    changes = None  # type: List[Match]
