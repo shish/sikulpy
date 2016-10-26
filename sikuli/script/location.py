@@ -2,6 +2,8 @@
 http://doc.sikuli.org/location.html
 """
 
+from .sikulpy import unofficial
+
 
 class Location(object):
     def __init__(self, x, y):
@@ -31,6 +33,29 @@ class Location(object):
         :rtype: Location
         """
         return Location(self.x + other.x, self.y + other.y)
+
+    @unofficial
+    def __sub__(self, other):
+        """
+        :param Location other:
+        :rtype: Location
+        """
+        return Location(self.x - other.x, self.y - other.y)
+
+    @unofficial
+    def __mul__(self, factor):
+        """
+        :param float other:
+        :rtype: Location
+        """
+        return Location(self.x * factor, self.y * factor)
+
+    @unofficial
+    def getXY(self):
+        """
+        :rtype: Tuple(float, float)
+        """
+        return self.getX(), self.getY()
 
     def getX(self):
         """
