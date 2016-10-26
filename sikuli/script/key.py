@@ -3,7 +3,7 @@ http://doc.sikuli.org/keys.html
 """
 
 import sys
-if sys.version_info >= (3,0):
+if sys.version_info >= (3, 0):
     import autopy3 as autopy  # EXT
 else:
     import autopy  # EXT

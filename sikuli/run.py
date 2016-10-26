@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import sys
 import os
 import runpy
 import logging
@@ -22,7 +21,7 @@ def reload(module):
 def run(folder):
     folder = os.path.abspath(folder)
     module = os.path.basename(folder).replace(".sikuli", "")
-    #print("Running %s from %s" % (module, folder))
+    # print("Running %s from %s" % (module, folder))
     sys.path.append(folder)
     sys.path.append(os.path.dirname(folder))  # FIXME: adding parent is unofficial
     Settings.ImagePaths.append(folder)

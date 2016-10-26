@@ -55,6 +55,7 @@ class Env(object):
     @staticmethod
     def isLockOn(key):
         """
+        :param key:
         :rtype: bool
         """
         return Robot.isLockOn(key)

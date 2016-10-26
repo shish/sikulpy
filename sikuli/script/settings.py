@@ -3,7 +3,7 @@ class Settings(object):
     autoWaitTimeout = 0
 
     Scale = 1  # FIXME: unofficial
-    ImagePaths = []  # FIXME: unofficial
+    ImagePaths = []  # type: List[str]
 
     # Either option might be switched on (True) or off (False), to show or
     # hide the respective message type in the IDE console or on command line
