@@ -1,11 +1,10 @@
 import sys
 import pyscreenshot  # EXT
 import warnings
-from time import sleep
 import platform
 import subprocess
 
-if sys.version_info >= (3,0):
+if sys.version_info >= (3, 0):
     import autopy3 as autopy  # EXT
 else:
     import autopy  # EXT
@@ -34,7 +33,6 @@ class Robot(object):
         """
         log.info("mouseMove(%r)", xy)
         autopy.mouse.move(int(xy[0]), int(xy[1]))
-        sleep(0.1)
 
     @staticmethod
     def mouseDown(button):
@@ -51,7 +49,7 @@ class Robot(object):
         """
         :rtype: (int, int)
         """
-        warnings.warn('Robot.getMouseLocation() not implemented')  # FIXME
+        return autopy.mouse.get_pos()
 
     # keyboard
     @staticmethod
