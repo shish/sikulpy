@@ -20,7 +20,7 @@ class Settings(object):
     # Control the time taken for mouse movement to a target location by
     # setting this value to a decimal value (default 0.5). The unit is
     # seconds. Setting it to 0 will switch off any animation (the mouse will
-    # “jump” to the target location).
+    # "jump" to the target location).
     MoveMouseDelay = 0.5
 
     # DelayAfterDrag specifies the waiting time after mouse down at the source
