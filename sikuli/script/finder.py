@@ -25,7 +25,7 @@ class Finder(object):
         """
         pass
 
-    def next(self) -> Match:
+    def next(self):
         """
         :rtype: Match
         """

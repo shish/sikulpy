@@ -26,10 +26,10 @@ class Rectangle(object):
 
     # set
 
-    def setX(self, x: int): self.x = x
-    def setY(self, y: int): self.y = y
-    def setW(self, w: int): self.w = w
-    def setH(self, h: int): self.h = h
+    def setX(self, x): self.x = x
+    def setY(self, y): self.y = y
+    def setW(self, w): self.w = w
+    def setH(self, h): self.h = h
 
     def moveTo(self, location):
         """

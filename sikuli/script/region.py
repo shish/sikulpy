@@ -203,8 +203,10 @@ class Region(Rectangle):
             region_img = cv2.cvtColor(region_img, cv2.COLOR_BGR2GRAY)
             target_img = cv2.cvtColor(target_img, cv2.COLOR_BGR2GRAY)
         else:
-            region_img = region_img[:,:,self._channel]
-            target_img = target_img[:,:,self._channel]
+            #region_img = region_img[:,:,self._channel]
+            #target_img = target_img[:,:,self._channel]
+            region_img = cv2.split(region_img)[self._channel]
+            target_img = cv2.split(target_img)[self._channel]
 
         _conv = time()
         tw, th = target_img.shape[::-1]

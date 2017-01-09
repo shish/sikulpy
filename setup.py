@@ -4,6 +4,15 @@ from sikuli.version import VERSION
 import sys
 py3 = (sys.version_info >= (3, 0))
 
+alldeps = [
+    "pyscreenshot",
+    "pillow",
+    "numpy",
+    #"opencv",
+]
+py3deps = ["autopy3"]
+py2deps = ["autopy", "enum"]
+
 setup(
     name='sikulpy',
     version=VERSION,
@@ -11,13 +20,7 @@ setup(
     long_description='',
     author='Shish',
     author_email='webmaster@shishnet.org',
-    install_requires=[
-        "pyscreenshot",
-        "autopy3" if py3 else "autopy",
-        "pillow",
-        "numpy",
-        #"opencv",
-    ],
+    install_requires=alldeps + (py3deps if py3 else py2deps),
     url='https://github.com/shish/sikulpy',
     classifiers=[
         "Development Status :: 4 - Beta",
