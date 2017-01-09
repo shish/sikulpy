@@ -5,9 +5,9 @@ python:
 
 before_install:
   - sudo apt-get update -q
-  - sudo apt-get install libxtst-dev -y
+  - sudo apt-get install libxtst-dev python-opencv -y
 install:
   - pip install .
   - pip install pytest-cov
 
-script: pytest --cov=sikuli test/unit/
+script: cd test ; pytest --cov=sikuli unit/
