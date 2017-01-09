@@ -6,6 +6,7 @@ python:
 before_install:
   - sudo apt-get update -q
   - sudo apt-get install libxtst-dev python-opencv -y
+  - sudo cp /usr/lib/pyshared/python2.7/cv2.so /home/travis/virtualenv/python2.7.12/lib/python2.7/site-packages/
 install:
   - pip install .
   - pip install pytest-cov
