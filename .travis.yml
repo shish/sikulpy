@@ -5,4 +5,5 @@ python:
 install: pip install .
 
 # just check that we are installed
+# test1231
 script: true
