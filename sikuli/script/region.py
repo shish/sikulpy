@@ -27,9 +27,9 @@ log = logging.getLogger(__name__)
 class Region(Rectangle):
     # Constructor can be Region(Rectangle) or Region(x, y, w, h)
     def __init__(self, rect, b=None, c=None, d=None):
+        Rectangle.__init__(self)
         if b is not None:
             rect = Rectangle(rect, b, c, d)
-        super().__init__()
         self.setRect(rect)
 
         self._screen = None

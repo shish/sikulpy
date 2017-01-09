@@ -14,7 +14,7 @@ class Match(Region):
         :param float sim: similarity
         :param Location targetOffset: where to click
         """
-        super().__init__(rect)
+        Region.__init__(self, rect)
         self._name = None
         self._score = sim
         self._targetOffset = targetOffset

@@ -16,7 +16,7 @@ class Screen(Region):
         :param int id_:
         """
         x, y, w, h = Robot.screenSize()
-        super().__init__(Rectangle(x, y, w, h))
+        Region.__init__(self, Rectangle(x, y, w, h))
         self.id = id_
 
     @staticmethod
