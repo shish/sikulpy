@@ -8,6 +8,4 @@ before_install:
   - sudo apt-get install libxtst-dev -y
 install: pip install .
 
-# just check that we are installed
-# test1231
-script: true
+script: pytest test/unit.py
