@@ -7,10 +7,14 @@ before_install:
   - sudo apt-get update -q
   - sudo apt-get install libxtst-dev python-opencv -y
   - sudo cp /usr/lib/pyshared/python2.7/cv2.so /home/travis/virtualenv/python2.7.12/lib/python2.7/site-packages/
+  - wget http://code.shishnet.org/files/opt-opencv.tgz
+  - sudo tar -C / xzf opt-opencv.tgz
+  - sudo cp /opt/opencv/cv2.cpython-35m-x86_64-linux-gnu.so /home/travis/virtualenv/python3.5.2/lib/python3.5/site-packages/
   - sudo ln /dev/null /dev/raw1394
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
   - sleep 3 # give xvfb some time to start
+
 install:
   - pip install .
   - pip install pytest-cov
