@@ -20,8 +20,7 @@ before_install:
   fi
 - |
   if [[ $TRAVIS_PYTHON_VERSION == 3.5 ]]; then
-  mkdir ~/opencv/
-  curl http://code.shishnet.org/files/opt-opencv.tar.xz | tar xv --xz -C ~/opencv/
+  curl http://code.shishnet.org/files/opencv.tar.xz | tar xv --xz
   cp ~/opencv/cv2.cpython-35m-x86_64-linux-gnu.so $VIRTUAL_ENV/lib/python3.5/site-packages/
   fi
 
