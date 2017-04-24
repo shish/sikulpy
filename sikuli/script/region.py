@@ -203,27 +203,27 @@ class Region(Rectangle):
             region_img = cv2.cvtColor(region_img, cv2.COLOR_BGR2GRAY)
             target_img = cv2.cvtColor(target_img, cv2.COLOR_BGR2GRAY)
         else:
-            #region_img = region_img[:,:,self._channel]
-            #target_img = target_img[:,:,self._channel]
+            # region_img = region_img[:,:,self._channel]
+            # target_img = target_img[:,:,self._channel]
             region_img = cv2.split(region_img)[self._channel]
             target_img = cv2.split(target_img)[self._channel]
 
         _conv = time()
+        rw, rh = region_img.shape[::-1]
         tw, th = target_img.shape[::-1]
+
+        if tw > rw or th > rh:
+            raise FindFailed("%r is larger than %r" % (target, self))
 
         res = cv2.matchTemplate(region_img, target_img, cv2.TM_CCOEFF_NORMED)
         loc = np.where(res >= target.similarity)
         for pt in zip(*loc[::-1]):
             # if there is a better match right next to this one, ignore this one
-            found_better = False
-            for x in [-1, 0, +1]:
-                for y in [-1, 0, +1]:
-                    try:
-                        if res[pt[1]+y, pt[0]+x] > res[pt[1], pt[0]]:
-                            found_better = True
-                    except IndexError:
-                        pass
-            if found_better:
+            local_max = np.amax(res[
+                max(pt[1] - 1, 0):pt[1] + 1,
+                max(pt[0] - 1, 0):pt[0] + 1
+            ])
+            if res[pt[1], pt[0]] < local_max:
                 continue
 
             m = Match(
@@ -234,31 +234,14 @@ class Region(Rectangle):
             m._name = target.getFilename()
             matches.append(m)
 
-            bl = (0, 0, 0)
-            wh = (255, 255, 255)
-            cv2.rectangle(region_img, pt, (pt[0] + tw, pt[1] + th), bl, 4)
-            cv2.rectangle(region_img, pt, (pt[0] + tw, pt[1] + th), wh, 3)
-            cv2.rectangle(region_img, pt, (pt[0] + tw, pt[1] + th), bl, 2)
-            cv2.rectangle(region_img, pt, (pt[0] + tw, pt[1] + th), wh, 1)
-            cv2.putText(region_img, "%.2f" % m.getScore(), (pt[0], pt[1] + th),
-                        cv2.FONT_HERSHEY_SIMPLEX, 1, bl, 2, cv2.LINE_AA)
-
         matches = list(reversed(sorted(matches)))
 
-        from pprint import pprint
         if self._debug:
-            pprint(matches)
-            try:
-                cv2.imshow('region', region_img)
-                cv2.waitKey(0)
-                cv2.destroyAllWindows()
-            except:  # cv2 build with --no-gui
-                cv2.imwrite('region.png', region_img)
-
-        # cv2.imwrite('img1.png', region_img)
-        # cv2.imwrite('img2.png', target_img)
-        # cv2.imwrite('img3.png', res * 255)
-        # cv2.imwrite('img.png', img_rgb)
+            self._display_matches(region_img, matches)
+            # cv2.imwrite('img1.png', region_img)
+            # cv2.imwrite('img2.png', target_img)
+            # cv2.imwrite('img3.png', res * 255)
+            # cv2.imwrite('img.png', img_rgb)
 
         log.debug(
             "Searching for %r within %r: %d matches [%.3fs: %.3fs conv]",
@@ -268,6 +251,41 @@ class Region(Rectangle):
             raise FindFailed()
         self._last_matches = matches
         return matches
+
+    def _display_matches(self, img, matches):
+        """
+        :param np.array img: 
+        :param list[Match] matches: 
+        """
+        from pprint import pprint
+        pprint(matches)
+
+        for m in matches:
+            for n in range(4, 0, -1):
+                cv2.rectangle(
+                    img,
+                    m.getTopLeft().getXY(),
+                    m.getBottomRight().getXY(),
+                    (0, 0, 0) if n % 2 == 0 else (255, 255, 255),
+                    n
+                )
+            cv2.putText(
+                img,
+                "%.2f" % m.getScore(),
+                m.getBottomLeft().getXY(),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                1,
+                (0, 0, 0),
+                2,
+                cv2.LINE_AA
+            )
+
+        try:
+            cv2.imshow('region', img)
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
+        except:  # cv2 build with --no-gui
+            cv2.imwrite('region.png', img)
 
     def wait(self, target, seconds=None):
         """
@@ -315,16 +333,20 @@ class Region(Rectangle):
     # observing
 
     def onAppear(self, target, handler):
-        warnings.warn('Region.onAppear(%r, %r) not implemented' % (target, handler))  # FIXME
+        warnings.warn('Region.onAppear(%r, %r) not implemented' % (
+        target, handler))  # FIXME
 
     def onVanish(self, target, handler):
-        warnings.warn('Region.onVanish(%r, %r) not implemented' % (target, handler))  # FIXME
+        warnings.warn('Region.onVanish(%r, %r) not implemented' % (
+        target, handler))  # FIXME
 
     def onChange(self, target, handler):
-        warnings.warn('Region.onChange(%r, %r) not implemented' % (target, handler))  # FIXME
+        warnings.warn('Region.onChange(%r, %r) not implemented' % (
+        target, handler))  # FIXME
 
     def observe(self, seconds, background=False):
-        warnings.warn('Region.observe(%r, %r) not implemented' % (seconds, background))  # FIXME
+        warnings.warn('Region.observe(%r, %r) not implemented' % (
+        seconds, background))  # FIXME
 
     def stopObserver(self):
         warnings.warn('Region.stopObserver() not implemented')  # FIXME
@@ -362,7 +384,7 @@ class Region(Rectangle):
         p1 = Location(*Robot.getMouseLocation())
         p2 = self._toLocation(self._targetOrLast(target))
         if _delay > 0:
-            for tick in range(0, ticks+1):
+            for tick in range(0, ticks + 1):
                 factor = float(tick) / float(ticks)
                 px = p1 + (p2 - p1) * factor
                 Robot.mouseMove(px.getXY())
@@ -434,7 +456,8 @@ class Region(Rectangle):
     def dragDrop(self, target1, target2, modifiers=None):
         self.drag(target1)
         # FIXME: aren't these the same thing?
-        self.dropAt(target2, delay=Settings.DelayAfterDrag + Settings.DelayBeforeDrop)
+        self.dropAt(target2,
+                    delay=Settings.DelayAfterDrag + Settings.DelayBeforeDrop)
 
     def drag(self, target=None):
         self.mouseMove(target)
@@ -493,7 +516,8 @@ class Region(Rectangle):
 
     def setFindFailedResponse(self, response):
         # ABORT / SKIP / PROMPT / RETRY
-        warnings.warn('Region.setFindFailedResponse(%r) not implemented' % response)  # FIXME
+        warnings.warn(
+            'Region.setFindFailedResponse(%r) not implemented' % response)  # FIXME
 
     def getFindFailedResponse(self):
         warnings.warn('Region.getFindFailedResponse() not implemented')  # FIXME
@@ -517,14 +541,16 @@ class Region(Rectangle):
         :param Pattern|str target:
         :rtype: Region
         """
-        warnings.warn('Region.getRegionFromPSRM(%r) not implemented' % target)  # FIXME
+        warnings.warn(
+            'Region.getRegionFromPSRM(%r) not implemented' % target)  # FIXME
 
     def getLocationFromPSRML(self, target):
         """
         :param Pattern|str target:
         :rtype: Location
         """
-        warnings.warn('Region.getLocationFromPSRML(%r) not implemented' % target)  # FIXME
+        warnings.warn(
+            'Region.getLocationFromPSRML(%r) not implemented' % target)  # FIXME
 
 
 class SikuliEvent(object):

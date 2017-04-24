@@ -40,7 +40,7 @@ class Screen(Region):
         if not rect:
             rect = self.getBounds()
         fn = tempfile.mktemp(".png")
-        img = Robot.capture(rect.getBounds())
+        img = Robot.capture((rect.x, rect.y, rect.w, rect.h))
         img.save(fn)
         return fn
 

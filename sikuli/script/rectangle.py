@@ -24,6 +24,17 @@ class Rectangle(object):
             self.x, self.y, self.w, self.h
         )
 
+    def __eq__(self, b):
+        return (
+            self.x == b.x and
+            self.y == b.y and
+            self.w == b.w and
+            self.h == b.h
+        )
+
+    def __ne__(self, b):
+        return not self.__eq__(b)
+
     # set
 
     def setX(self, x): self.x = x
@@ -76,12 +87,6 @@ class Rectangle(object):
         :rtype: Location
         """
         return Location(self.x + self.w // 2, self.y + self.h // 2)
-
-    def getBounds(self):
-        """
-        :rtype: (int, int, int, int)
-        """
-        return self.x, self.y, self.w, self.h
 
     getTarget = getCenter
 

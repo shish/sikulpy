@@ -143,9 +143,14 @@ class Robot(object):
         )
 
         data = pyscreenshot.grab(bbox=bbox2, childprocess=False)
-        if data.size[0] != bbox[2]:
-            # log.debug("Captured image is different size than we expected, shrinking")
+        if data.size[0] == bbox[2] * 2:
+            # log.debug("Captured image is double size, shrinking")
             data = data.resize((data.size[0]//2, data.size[1]//2))
+        elif data.size[0] != bbox[2]:
+            log.warning(
+                "Captured image is different size than we expected (%dx%d vs %dx%d)",
+                data.size[0], data.size[1], bbox[2], bbox[3]
+            )
 
         log.info("capture(%r) [%.3fs]", bbox, time() - _start)
         return Image(data)
