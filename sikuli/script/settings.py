@@ -23,11 +23,9 @@ class Settings(object):
     # "jump" to the target location).
     MoveMouseDelay = 0.5
 
-    # DelayAfterDrag specifies the waiting time after mouse down at the source
-    # location as a decimal value (seconds).
-    # DelayBeforeDrop specifies the waiting time before mouse up at the target
-    # location as a decimal value (seconds).
-    DelayAfterDrag = 0.1
+    # move -> mouse down -> move (drag) -> mouse up (drop)
+    DelayBeforeMouseDown = 0.1
+    DelayBeforeDrag = 0.1
     DelayBeforeDrop = 0.1
 
     # Control the duration of the visual effect (seconds).

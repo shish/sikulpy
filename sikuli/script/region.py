@@ -455,18 +455,20 @@ class Region(Rectangle):
 
     def dragDrop(self, target1, target2, modifiers=None):
         self.drag(target1)
-        # FIXME: aren't these the same thing?
-        self.dropAt(target2,
-                    delay=Settings.DelayAfterDrag + Settings.DelayBeforeDrop)
+        if Settings.DelayBeforeDrag:
+            sleep(Settings.DelayBeforeDrag)
+        self.dropAt(target2)
 
     def drag(self, target=None):
         self.mouseMove(target)
+        if Settings.DelayBeforeMouseDown:
+            sleep(Settings.DelayBeforeMouseDown)
         self.mouseDown(Mouse.LEFT)
 
     def dropAt(self, target=None, delay=None):
         self.mouseMove(target)
-        if delay:
-            sleep(delay)
+        if Settings.DelayBeforeDrop:
+            sleep(Settings.DelayBeforeDrop)
         self.mouseUp(Mouse.LEFT)
 
     # keyboard
