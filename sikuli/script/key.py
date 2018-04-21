@@ -11,6 +11,7 @@ else:
 
 class Key(object):
     ENTER = '\n'
+    BACKSPACE = chr(autopy.key.K_BACKSPACE)
 
 
 class KeyModifier(object):

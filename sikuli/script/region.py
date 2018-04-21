@@ -220,8 +220,8 @@ class Region(Rectangle):
         for pt in zip(*loc[::-1]):
             # if there is a better match right next to this one, ignore this one
             local_max = np.amax(res[
-                max(pt[1] - 1, 0):pt[1] + 1,
-                max(pt[0] - 1, 0):pt[0] + 1
+                max(pt[1] - 2, 0):pt[1] + 2,
+                max(pt[0] - 2, 0):pt[0] + 2
             ])
             if res[pt[1], pt[0]] < local_max:
                 continue
@@ -248,7 +248,7 @@ class Region(Rectangle):
             target, img, len(matches), time() - _start, _conv - _start
         )
         if not matches:
-            raise FindFailed()
+            raise FindFailed("Couldn't find target %r" % target)
         self._last_matches = matches
         return matches
 
@@ -264,15 +264,15 @@ class Region(Rectangle):
             for n in range(4, 0, -1):
                 cv2.rectangle(
                     img,
-                    m.getTopLeft().getXY(),
-                    m.getBottomRight().getXY(),
+                    tuple([int(v) for v in m.getTopLeft().getXY()]),
+                    tuple([int(v) for v in m.getBottomRight().getXY()]),
                     (0, 0, 0) if n % 2 == 0 else (255, 255, 255),
                     n
                 )
             cv2.putText(
                 img,
                 "%.2f" % m.getScore(),
-                m.getBottomLeft().getXY(),
+                tuple([int(v) for v in m.getBottomLeft().getXY()]),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 1,
                 (0, 0, 0),
@@ -281,6 +281,7 @@ class Region(Rectangle):
             )
 
         try:
+            raise Exception("Just dump")
             cv2.imshow('region', img)
             cv2.waitKey(0)
             cv2.destroyAllWindows()
