@@ -1,5 +1,5 @@
-import warnings
 import sys
+from typing import Union, List
 
 from .app import App
 from .env import Env
@@ -17,88 +17,54 @@ from .robot import Robot
 desktop = Screen(0)
 
 
-def find(ps):
-    """
-    :param Pattern|str ps:
-    :rtype: list[Match]
-    """
+def find(ps: Union[Pattern, str]) -> Match:
     return desktop.find(ps)
 
 
-def popup(text, title):
-    """
-    :param str text:
-    :param str title:
-    """
-    warnings.warn('sikuli.popup(%r, %r) not implemented' % (text, title))  # FIXME
+def popup(text: str, title: str) -> None:
+    raise NotImplementedError('sikuli.popup(%r, %r) not implemented' % (text, title))  # FIXME
 
 
-def input_(text, default):
-    """
-    :param str text:
-    :param str default:
-    :rtype: str
-    """
-    warnings.warn('sikuli.input(%r, %r) not implemented' % (text, default))  # FIXME
+def input_(text: str, default: str) -> str:
+    raise NotImplementedError('sikuli.input(%r, %r) not implemented' % (text, default))  # FIXME
 
 
-def load(path):
-    """
-    :param str path:
-    """
-    warnings.warn('sikuli.load(%r) not implemented' % (path, ))  # FIXME
+def load(path: str):
+    raise NotImplementedError('sikuli.load(%r) not implemented' % (path, ))  # FIXME
 
 
-def setShowActions(sa):
-    """
-    :param bool sa:
-    """
-    warnings.warn('sikuli.setShowActions(%r) not implemented' % (sa, ))  # FIXME
+def setShowActions(sa: bool):
+    raise NotImplementedError('sikuli.setShowActions(%r) not implemented' % (sa, ))  # FIXME
 
 
-def exit(code):
-    """
-    :param int code:
-    """
+def exit(code: int) -> None:
     sys.exit(code)
 
 
-def getImagePath():
+def getImagePath() -> List[str]:
     """
     Get a list of paths where Sikuli will search for images.
-
-    :rtype: list[str]
     """
     return Settings.ImagePaths
 
 
-def addImagePath(path):
+def addImagePath(path: str) -> None:
     """
     Add a new path to the list of image search paths
-
-    :param str path: a path
     """
     Settings.ImagePaths.append(path)
 
 
-def removeImagePath(path):
+def removeImagePath(path: str) -> None:
     """
     Remove a path from the list of image search paths
-
-    :param str path: a path
     """
     Settings.ImagePaths.remove(path)
 
 
-def getBundlePath():
-    """
-    :rtype: list[str]
-    """
-    warnings.warn('sikuli.getBundlePath() not implemented')  # FIXME
+def getBundlePath() -> List[str]:
+    raise NotImplementedError('sikuli.getBundlePath() not implemented')  # FIXME
 
 
-def setBundlePath(path):
-    """
-    :param bool path:
-    """
-    warnings.warn('sikuli.setBundlePath(%r) not implemented' % (path, ))  # FIXME
+def setBundlePath(path: bool):
+    raise NotImplementedError('sikuli.setBundlePath(%r) not implemented' % (path, ))  # FIXME

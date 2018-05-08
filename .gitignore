@@ -1,3 +1,4 @@
+env
 .env
 .env2
 .idea
@@ -5,7 +6,11 @@
 java/
 __pycache__/
 *.pyc
+*.so
 *.log
 *.egg-info
 scripts
 sync.sh
+.coverage
+.cache
+.pytest_cache

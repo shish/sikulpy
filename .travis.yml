@@ -1,8 +1,7 @@
 language: python
 sudo: false
 python:
-- 2.7
-- 3.5
+- 3.6
 
 addons:
   apt:
@@ -15,13 +14,9 @@ before_install:
   export DISPLAY=:99.0
   sh -e /etc/init.d/xvfb start
 - |
-  if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then
-  cp /usr/lib/python2.7/dist-packages/cv2.so $VIRTUAL_ENV/lib/python2.7/site-packages/
-  fi
-- |
-  if [[ $TRAVIS_PYTHON_VERSION == 3.5 ]]; then
+  if [[ $TRAVIS_PYTHON_VERSION == 3.6 ]]; then
   curl --silent http://code.shishnet.org/files/opencv.tar.gz | tar xzv -C ~/
-  cp ~/opencv/cv2.cpython-35m-x86_64-linux-gnu.so $VIRTUAL_ENV/lib/python3.5/site-packages/
+  cp ~/opencv/cv2.cpython-36m-x86_64-linux-gnu.so $VIRTUAL_ENV/lib/python3.6/site-packages/
   fi
 
 install: pip install pytest-cov .

@@ -1,4 +1,3 @@
-import sys
 import pyscreenshot  # EXT
 import warnings
 import platform
@@ -7,13 +6,11 @@ from enum import Enum
 from time import time
 from base64 import b64decode
 from io import BytesIO
+from typing import Tuple
 
 from PIL import Image as PILImage  # EXT
 
-if sys.version_info >= (3, 0):
-    import autopy3 as autopy  # EXT
-else:
-    import autopy  # EXT
+import autopy3 as autopy  # EXT
 
 try:
     import devtools  # EXT
@@ -164,10 +161,7 @@ class Robot(object):
 
     @staticmethod
     @unofficial
-    def putClipboard(text):
-        """
-        :param str text:
-        """
+    def putClipboard(text: str) -> None:
         if PLATFORM == Platform.LINUX:
             p = subprocess.run(
                 "xclip",
@@ -189,10 +183,7 @@ class Robot(object):
 
     # screen
     @staticmethod
-    def getNumberScreens():
-        """
-        :rtype: int
-        """
+    def getNumberScreens() -> int:
         if PLATFORM == Platform.LINUX and _native:
             return _native.getNumberScreens()
         elif PLATFORM == Platform.VNC:
@@ -204,10 +195,7 @@ class Robot(object):
         return 1
 
     @staticmethod
-    def screenSize():
-        """
-        :rtype: (int, int, int, int)
-        """
+    def screenSize() -> Tuple[int, int, int, int]:
         if PLATFORM == Platform.CHROME:
             img = Robot.capture()
             w, h = img.w, img.h
@@ -216,11 +204,7 @@ class Robot(object):
         return 0, 0, w, h
 
     @staticmethod
-    def capture(bbox=None):
-        """
-        :param (int, int, int, int) bbox:
-        :rtype: Image
-        """
+    def capture(bbox: Tuple[int, int, int, int]=None) -> Image:
         _start = time()
 
         if PLATFORM == Platform.CHROME:
@@ -260,10 +244,7 @@ class Robot(object):
 
     # window
     @staticmethod
-    def focus(application):
-        """
-        :param str application:
-        """
+    def focus(application: str) -> None:
         if PLATFORM == Platform.DARWIN:
             # FIXME: we don't want to hard-code 'Chrome' as the app, and
             # we want 'window title contains X' rather than 'is X'

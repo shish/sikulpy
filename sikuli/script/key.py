@@ -2,24 +2,20 @@
 http://doc.sikuli.org/keys.html
 """
 
-import sys
-if sys.version_info >= (3, 0):
-    import autopy3 as autopy  # EXT
-else:
-    import autopy  # EXT
+import autopy3  # EXT
 
 
 class Key(object):
     ENTER = '\n'
-    BACKSPACE = chr(autopy.key.K_BACKSPACE)
+    BACKSPACE = chr(autopy3.key.K_BACKSPACE)
 
 
 class KeyModifier(object):
     # these differ based on platform
-    CTRL = autopy.key.MOD_CONTROL
-    SHIFT = autopy.key.MOD_SHIFT
-    ALT = autopy.key.MOD_ALT
-    META = autopy.key.MOD_META
+    CTRL = autopy3.key.MOD_CONTROL
+    SHIFT = autopy3.key.MOD_SHIFT
+    ALT = autopy3.key.MOD_ALT
+    META = autopy3.key.MOD_META
 
     CMD = META
     WIN = META

@@ -21,6 +21,11 @@ from .sikulpy import unofficial
 
 from .exc import FindFailed
 
+from typing import Union, List, Tuple, Any, Optional, TYPE_CHECKING
+if TYPE_CHECKING:
+    from .screen import Screen
+    from .match import Match
+
 log = logging.getLogger(__name__)
 
 
@@ -44,11 +49,11 @@ class Region(Rectangle):
         self._channel = None
 
     @unofficial
-    def freeze(self):
+    def freeze(self) -> None:
         self._frozen = Robot.capture((self.x, self.y, self.w, self.h))
 
     @unofficial
-    def thaw(self):
+    def thaw(self) -> None:
         self._frozen = None
 
     @unofficial
@@ -57,67 +62,38 @@ class Region(Rectangle):
 
     # attributes
 
-    def setAutoWaitTimeout(self, t):
-        """
-        :param float t:
-        """
+    def setAutoWaitTimeout(self, t: float) -> None:
         self.autoWaitTimeout = t
 
-    def getAutoWaitTimeout(self):
-        """
-        :rtype: float
-        """
+    def getAutoWaitTimeout(self) -> float:
         return self.autoWaitTimeout
 
-    def getScreen(self):
-        """
-        :rtype: Screen
-        """
+    def getScreen(self) -> 'Screen':
         return self._screen
 
-    def getLastMatch(self):
-        """
-        :rtype: Match
-        """
+    def getLastMatch(self) -> 'Match':
         return self.getLastMatches()[0]
 
-    def getLastMatches(self):
-        """
-        :rtype: list[Match]
-        """
+    def getLastMatches(self) -> List['Match']:
         return self._last_matches
 
     # extending a region
 
-    def _copy(self):
-        """
-        :rtype: Region
-        """
+    def _copy(self) -> 'Region':
         r = Region(self)
         r._screen = self._screen
         return r
 
-    def offset(self, l):
-        """
-        :param Location l:
-        :rtype: Region
-        """
+    def offset(self, l: Location) -> 'Region':
         r = self._copy()
         r.x += l.x
         r.y += l.y
         return r
 
-    def inside(self):
-        """
-        :rtype: Region
-        """
+    def inside(self) -> 'Region':
         return self
 
-    def nearby(self, range_=50):
-        """
-        :param int range_:
-        :rtype: Region
-        """
+    def nearby(self, range_: int=50) -> 'Region':
         r = self._copy()
         r.x -= range_
         r.y -= range_
@@ -125,11 +101,7 @@ class Region(Rectangle):
         r.h += range_ * 2
         return r
 
-    def above(self, range_=None):
-        """
-        :param int range_:
-        :rtype: Region
-        """
+    def above(self, range_: int=None) -> 'Region':
         if not range_:
             range_ = self.y - self._screen.y
         r = self._copy()
@@ -137,11 +109,7 @@ class Region(Rectangle):
         r.y -= range_
         return r
 
-    def below(self, range_=None):
-        """
-        :param int range_:
-        :rtype: Region
-        """
+    def below(self, range_: int=None) -> 'Region':
         if not range_:
             range_ = self._screen.h - (self.y + self.h)
         r = self._copy()
@@ -149,11 +117,7 @@ class Region(Rectangle):
         r.h = range_
         return r
 
-    def left(self, range_=None):
-        """
-        :param int range_:
-        :rtype: Region
-        """
+    def left(self, range_: int=None) -> 'Region':
         if not range_:
             range_ = self.x - self._screen.x
         r = self._copy()
@@ -161,11 +125,7 @@ class Region(Rectangle):
         r.x -= range_
         return r
 
-    def right(self, range_=None):
-        """
-        :param int range_:
-        :rtype: Region
-        """
+    def right(self, range_: int=None) -> 'Region':
         if not range_:
             range_ = self._screen.w - (self.x + self.w)
         r = self._copy()
@@ -175,18 +135,10 @@ class Region(Rectangle):
 
     # finding
 
-    def find(self, target):
-        """
-        :param Pattern|str target:
-        :rtype: Match
-        """
+    def find(self, target: Union[Pattern, str]) -> 'Match':
         return self.findAll(target)[0]
 
-    def findAll(self, target):
-        """
-        :param Pattern|str target:
-        :rtype: list[Match]
-        """
+    def findAll(self, target: Union[Pattern, str]) -> List['Match']:
         if not isinstance(target, Pattern):
             target = Pattern(target)
 
@@ -252,11 +204,7 @@ class Region(Rectangle):
         self._last_matches = matches
         return matches
 
-    def _display_matches(self, img, matches):
-        """
-        :param np.array img: 
-        :param list[Match] matches: 
-        """
+    def _display_matches(self, img: np.array, matches: List['Match']) -> None:
         from pprint import pprint
         pprint(matches)
 
@@ -282,18 +230,13 @@ class Region(Rectangle):
 
         try:
             raise Exception("Just dump")
-            cv2.imshow('region', img)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
+            # cv2.imshow('region', img)
+            # cv2.waitKey(0)
+            # cv2.destroyAllWindows()
         except:  # cv2 build with --no-gui
             cv2.imwrite('region.png', img)
 
-    def wait(self, target, seconds=None):
-        """
-        :param Pattern|str target:
-        :param float seconds:
-        :rtype: Match
-        """
+    def wait(self, target: Union[Pattern, str], seconds: float=None) -> 'Match':
         until = time() + (seconds or self.autoWaitTimeout)
         while True:
             x = self.find(target)
@@ -305,12 +248,7 @@ class Region(Rectangle):
 
         raise FindFailed()
 
-    def waitVanish(self, target, seconds=None):
-        """
-        :param Pattern|str target:
-        :param float seconds:
-        :rtype: bool
-        """
+    def waitVanish(self, target: Union[Pattern, str], seconds: float=None) -> bool:
         until = time() + (seconds or self.autoWaitTimeout)
         while True:
             if not self.find(target):
@@ -320,12 +258,7 @@ class Region(Rectangle):
             sleep(1)
         return False
 
-    def exists(self, target, seconds=None):
-        """
-        :param Pattern|str target:
-        :param float seconds:
-        :rtype: Match
-        """
+    def exists(self, target: Union[Pattern, str], seconds: float=None) -> Optional['Match']:
         try:
             return self.wait(target, seconds)
         except FindFailed:
@@ -333,33 +266,29 @@ class Region(Rectangle):
 
     # observing
 
-    def onAppear(self, target, handler):
-        warnings.warn('Region.onAppear(%r, %r) not implemented' % (
-        target, handler))  # FIXME
+    def onAppear(self, target: Union[Pattern, str], handler):
+        warnings.warn('Region.onAppear(%r, %r) not implemented' % (target, handler))  # FIXME
 
-    def onVanish(self, target, handler):
-        warnings.warn('Region.onVanish(%r, %r) not implemented' % (
-        target, handler))  # FIXME
+    def onVanish(self, target: Union[Pattern, str], handler):
+        warnings.warn('Region.onVanish(%r, %r) not implemented' % (target, handler))  # FIXME
 
-    def onChange(self, target, handler):
-        warnings.warn('Region.onChange(%r, %r) not implemented' % (
-        target, handler))  # FIXME
+    def onChange(self, target: Union[Pattern, str], handler):
+        warnings.warn('Region.onChange(%r, %r) not implemented' % (target, handler))  # FIXME
 
-    def observe(self, seconds, background=False):
-        warnings.warn('Region.observe(%r, %r) not implemented' % (
-        seconds, background))  # FIXME
+    def observe(self, seconds: float, background=False):
+        warnings.warn('Region.observe(%r, %r) not implemented' % (seconds, background))  # FIXME
 
-    def stopObserver(self):
+    def stopObserver(self) -> None:
         warnings.warn('Region.stopObserver() not implemented')  # FIXME
 
     # actions
 
-    def _targetOrLast(self, target):
+    def _targetOrLast(self, target: Union[Pattern, str]) -> Union[Pattern, str]:
         if not target:
             target = self.getLastMatch()
         return target
 
-    def _toLocation(self, target):
+    def _toLocation(self, target: Union[Pattern, str]) -> Location:
         if isinstance(target, str):
             target = Pattern(target)
         if isinstance(target, Pattern):
@@ -377,7 +306,7 @@ class Region(Rectangle):
     def mouseUp(self, button):
         Robot.mouseUp(button)
 
-    def mouseMove(self, target, _delay=None):
+    def mouseMove(self, target: Union[Pattern, str], _delay: float=None) -> Tuple[float, float]:
         if _delay is None:
             _delay = Settings.MoveMouseDelay
         ticks = 10
@@ -396,7 +325,7 @@ class Region(Rectangle):
         sleep(0.5)
         return pt
 
-    def wheel(self, target, button, steps=1):
+    def wheel(self, target: Union[Pattern, str], button, steps=1):
         self.mouseMove(target)
         for n in range(0, steps):
             self.mouseDown(button)
@@ -404,12 +333,7 @@ class Region(Rectangle):
             self.mouseUp(button)
             sleep(0.1)
 
-    def click(self, target=None, modifiers=None):
-        """
-        :param Pattern|str target:
-        :param int modifiers:
-        :rtype: int
-        """
+    def click(self, target: Union[Pattern, str]=None, modifiers: int=None) -> int:
         # FIXME: modifiers
         self.mouseMove(target)
         self.mouseDown(Mouse.LEFT)
@@ -417,12 +341,7 @@ class Region(Rectangle):
         self.mouseUp(Mouse.LEFT)
         return 1  # no. of clicks
 
-    def doubleClick(self, target=None, modifiers=None):
-        """
-        :param Pattern|str target:
-        :param int modifiers:
-        :rtype: int
-        """
+    def doubleClick(self, target: Union[Pattern, str]=None, modifiers: int=None) -> int:
         # FIXME: modifiers
         self.mouseMove(target)
         self.mouseDown(Mouse.LEFT)
@@ -434,12 +353,7 @@ class Region(Rectangle):
         self.mouseUp(Mouse.LEFT)
         return 1  # no. of double clicks
 
-    def rightClick(self, target=None, modifiers=None):
-        """
-        :param Pattern|str target:
-        :param int modifiers:
-        :rtype: int
-        """
+    def rightClick(self, target: Union[Pattern, str]=None, modifiers: int=None) -> int:
         # FIXME: modifiers
         self.mouseMove(target)
         self.mouseDown(Mouse.RIGHT)
@@ -447,28 +361,30 @@ class Region(Rectangle):
         self.mouseUp(Mouse.RIGHT)
         return 1  # no. of clicks
 
-    def highlight(self, seconds=None):
+    def highlight(self, seconds: float=None) -> None:
         # FIXME: display rectangle HUD
         pass
 
-    def hover(self, target=None):
+    def hover(self, target: Union[Pattern, str]=None) -> None:
         self.mouseMove(target)
 
-    def dragDrop(self, target1, target2, modifiers=None):
+    def dragDrop(self, target1: Union[Pattern, str], target2: Union[Pattern, str], modifiers: int=None) -> None:
         self.drag(target1)
         if Settings.DelayBeforeDrag:
             sleep(Settings.DelayBeforeDrag)
         self.dropAt(target2)
 
-    def drag(self, target=None):
+    def drag(self, target: Union[Pattern, str]=None) -> None:
         self.mouseMove(target)
         if Settings.DelayBeforeMouseDown:
             sleep(Settings.DelayBeforeMouseDown)
         self.mouseDown(Mouse.LEFT)
 
-    def dropAt(self, target=None, delay=None):
+    def dropAt(self, target: Union[Pattern, str]=None, delay: float=None) -> None:
         self.mouseMove(target)
-        if Settings.DelayBeforeDrop:
+        if delay is not None:
+            sleep(delay)
+        elif Settings.DelayBeforeDrop:
             sleep(Settings.DelayBeforeDrop)
         self.mouseUp(Mouse.LEFT)
 
@@ -480,13 +396,13 @@ class Region(Rectangle):
     def keyDown(self, key):
         Robot.keyDown(key)
 
-    def type(self, target=None, text=None, modifiers=None):
+    def type(self, target: Union[Pattern, str]=None, text: str=None, modifiers: int=None) -> None:
         if target:
             self.click(target)
 
         Robot.type(text, modifiers)
 
-    def paste(self, target=None, text=None):
+    def paste(self, target: Union[Pattern, str]=None, text: str=None) -> None:
         """
         Paste the text at a click point.
 
@@ -499,61 +415,37 @@ class Region(Rectangle):
           (integer null), which means, that because of some reason, it
           was not possible or the click could be performed (in case of
           PS may be not Found).
-
-        :param target:
-        :param text:
-        :return:
         """
         Env.putClipboard(text)
         self.type(target, "v", KeyModifier.CTRL)
 
     # OCR
 
-    def text(self):
-        """
-        :rtype: str
-        """
-        warnings.warn('Region.text() not implemented')  # FIXME
+    def text(self) -> str:
+        raise NotImplementedError('Region.text() not implemented')  # FIXME
 
     # error handling
 
     def setFindFailedResponse(self, response):
         # ABORT / SKIP / PROMPT / RETRY
-        warnings.warn(
-            'Region.setFindFailedResponse(%r) not implemented' % response)  # FIXME
+        raise NotImplementedError('Region.setFindFailedResponse(%r) not implemented' % response)  # FIXME
 
     def getFindFailedResponse(self):
-        warnings.warn('Region.getFindFailedResponse() not implemented')  # FIXME
+        raise NotImplementedError('Region.getFindFailedResponse() not implemented')  # FIXME
 
-    def setThrowException(self, te):
-        """
-        :param bool te:
-        """
+    def setThrowException(self, te: bool) -> None:
         self._throwException = te
 
-    def getThrowException(self):
-        """
-        :rtype: bool
-        """
+    def getThrowException(self) -> bool:
         return self._throwException
 
     # special
 
-    def getRegionFromPSRM(self, target):
-        """
-        :param Pattern|str target:
-        :rtype: Region
-        """
-        warnings.warn(
-            'Region.getRegionFromPSRM(%r) not implemented' % target)  # FIXME
+    def getRegionFromPSRM(self, target: Union[Pattern, str]) -> 'Region':
+        raise NotImplementedError('Region.getRegionFromPSRM(%r) not implemented' % target)  # FIXME
 
-    def getLocationFromPSRML(self, target):
-        """
-        :param Pattern|str target:
-        :rtype: Location
-        """
-        warnings.warn(
-            'Region.getLocationFromPSRML(%r) not implemented' % target)  # FIXME
+    def getLocationFromPSRML(self, target: Union[Pattern, str]) -> Location:
+        raise NotImplementedError('Region.getLocationFromPSRML(%r) not implemented' % target)  # FIXME
 
 
 class SikuliEvent(object):

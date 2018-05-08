@@ -14,11 +14,11 @@ logging.getLogger("easyprocess").setLevel(logging.WARNING)
 logging.getLogger("pyscreenshot").setLevel(logging.WARNING)
 
 
-def reload(module):
+def reload(module: str) -> None:
     logging.debug("Stub reload(%r)" % module)
 
 
-def run(folder):
+def run(folder: str) -> None:
     folder = os.path.abspath(folder)
     module = os.path.basename(folder).replace(".sikuli", "")
     # print("Running %s from %s" % (module, folder))
@@ -32,14 +32,14 @@ def run(folder):
         pass
 
 
-def main():
+def main() -> int:
     # FIXME: sikuli CLI compat
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--debug', default=False, action='store_true')
     parser.add_argument('-D', '--debugger', default=False, action='store_true')
     parser.add_argument('-s', '--scale', type=float, default=1.0)
-    parser.add_argument(      '--vnc', type=str)
-    parser.add_argument(      '--chrome', type=str)
+    parser.add_argument('-V', '--vnc', type=str)
+    parser.add_argument('-C', '--chrome', type=str)
     parser.add_argument('script')
     args = parser.parse_args()
 

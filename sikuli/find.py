@@ -6,14 +6,14 @@ import logging
 Settings.ImagePaths = ["."]
 
 
-def run(img, similarity):
+def run(img: str, similarity: float) -> None:
     p = Pattern(img).similar(similarity)
     s = Screen(0)
     s._debug = True
     s.exists(p)
 
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--debug', default=False, action='store_true')
     parser.add_argument('-s', '--scale', type=float, default=1.0)

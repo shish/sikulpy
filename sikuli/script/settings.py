@@ -1,3 +1,5 @@
+from typing import List
+
 
 class Settings(object):
     autoWaitTimeout = 0

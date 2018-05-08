@@ -1,4 +1,5 @@
 from PIL import Image as PILImage  # EXT
+from typing import Union
 
 from .settings import Settings
 
@@ -9,12 +10,12 @@ import warnings
 log = logging.getLogger(__name__)
 
 
-def _same_contents(a, b):
+def _same_contents(a: str, b: str) -> bool:
     return open(a, 'rb').read() == open(b, 'rb').read()
 
 
 class Image(object):
-    def __init__(self, base):
+    def __init__(self, base: Union[PILImage.Image, str]) -> None:
         if isinstance(base, PILImage.Image):
             self.img = base
             self._repr = "Image(%rx%r)" % (base.size[0], base.size[1])
@@ -57,11 +58,11 @@ class Image(object):
         self.w = self.img.size[0]
         self.h = self.img.size[1]
 
-    def save(self, fn):
+    def save(self, fn: str) -> None:
         self.img.save(fn)
 
-    def find(self, other):
-        return None
+    def find(self, other: 'Image'):
+        raise NotImplementedError("Image.find() not implemented")
 
     def __repr__(self):
         return self._repr

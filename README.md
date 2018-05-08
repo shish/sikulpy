@@ -8,9 +8,9 @@ This is a project to provide the same API using regular CPython libraries.
 The goal is to be able to run any script which works in the Java IDE.
 
 Dependencies:
-- CPython 3.5 (or 2.7)
+- CPython 3.6+
 - Pillow (or PIL)
-- AutoPy3 (or AutoPy)
+- AutoPy3
 - PyScreenshot
 - NumPy
 - OpenCV

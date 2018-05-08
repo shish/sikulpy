@@ -6,27 +6,14 @@ from .match import Match
 
 
 class Finder(object):
-    def __init__(self, filename):
-        """
-        :param str filename:
-        """
+    def __init__(self, filename: str):
         self.filename = filename
 
-    def find(self, filename, similarity=0.7):
-        """
-        :param str filename:
-        :param float similarity:
-        """
+    def find(self, filename: str, similarity: float=0.7):
         pass
 
-    def hasNext(self):
-        """
-        :rtype: bool
-        """
+    def hasNext(self) -> bool:
         pass
 
-    def next(self):
-        """
-        :rtype: Match
-        """
+    def next(self) -> Match:
         pass
