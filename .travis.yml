@@ -16,11 +16,11 @@ before_install:
   sh -e /etc/init.d/xvfb start
 - |
   if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then
-  cp /usr/lib/pyshared/python2.7/cv2.so $VIRTUAL_ENV/lib/python2.7/site-packages/
+  cp /usr/lib/python2.7/dist-packages/cv2.so $VIRTUAL_ENV/lib/python2.7/site-packages/
   fi
 - |
   if [[ $TRAVIS_PYTHON_VERSION == 3.5 ]]; then
-  curl --silent http://code.shishnet.org/files/opencv.tar.xz | tar xv --xz -C ~/
+  curl --silent http://code.shishnet.org/files/opencv.tar.gz | tar xzv -C ~/
   cp ~/opencv/cv2.cpython-35m-x86_64-linux-gnu.so $VIRTUAL_ENV/lib/python3.5/site-packages/
   fi
 
