@@ -1,5 +1,6 @@
 language: python
-sudo: false
+sudo: required
+dist: xenial
 python:
 - 3.6
 
@@ -15,8 +16,9 @@ before_install:
   sh -e /etc/init.d/xvfb start
 - |
   if [[ $TRAVIS_PYTHON_VERSION == 3.6 ]]; then
-  curl --silent http://code.shishnet.org/files/opencv.tar.gz | tar xzv -C ~/
-  cp ~/opencv/cv2.cpython-36m-x86_64-linux-gnu.so $VIRTUAL_ENV/lib/python3.6/site-packages/
+  wget http://code.shishnet.org/files/opencv-3.4.1-py3.6.3.tar.xz
+  tar xf opencv*.tar.xz -C ~/
+  cp ~/opencv/cv2.*.so $VIRTUAL_ENV/lib/python${TRAVIS_PYTHON_VERSION}/site-packages/
   fi
 
 install: pip install pytest-cov .
