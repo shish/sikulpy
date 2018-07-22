@@ -11,6 +11,8 @@ addons:
     - python-opencv
 
 before_install:
+- sudo rm -f /var/lib/apt/lists/lock /var/lib/dpkg/lock
+- sudo apt update && sudo apt install -y python-opencv libxtst-dev
 - |
   export DISPLAY=:99.0
   sh -e /etc/init.d/xvfb start

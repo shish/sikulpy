@@ -1,9 +1,8 @@
 from setuptools import setup
-from sikuli.version import VERSION
 
 setup(
     name='sikulpy',
-    version=VERSION,
+    version='0.0.0',
     description='An implementation of Sikuli for CPython',
     long_description='',
     author='Shish',
