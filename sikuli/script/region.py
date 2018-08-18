@@ -397,6 +397,10 @@ class Region(Rectangle):
         Robot.keyDown(key)
 
     def type(self, target: Union[Pattern, str]=None, text: str=None, modifiers: int=None) -> None:
+        if text is None:
+            text = target
+            target = None
+
         if target:
             self.click(target)
 

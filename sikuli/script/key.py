@@ -6,8 +6,13 @@ import autopy3  # EXT
 
 
 class Key(object):
-    ENTER = '\n'
-    BACKSPACE = chr(autopy3.key.K_BACKSPACE)
+    ENTER = int(autopy3.key.K_RETURN)
+    UP = int(autopy3.key.K_UP)
+    DOWN = int(autopy3.key.K_DOWN)
+    LEFT = int(autopy3.key.K_LEFT)
+    RIGHT = int(autopy3.key.K_RIGHT)
+    BACKSPACE = int(autopy3.key.K_BACKSPACE)
+    TAB = "\t"
 
 
 class KeyModifier(object):

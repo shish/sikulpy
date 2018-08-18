@@ -138,11 +138,17 @@ class Robot(object):
     @unofficial
     def type(text, modifiers):
         log.info("type(%r, %r)", text, modifiers)
-        for letter in text:
-            if PLATFORM == Platform.CHROME:
-                _chrome_server.input.dispatchKeyEvent("char", string=letter)
-            else:
-                autopy.key.tap(letter, modifiers or 0)
+        if isinstance(text, int):  # individual keycode
+            autopy.key.tap(text, modifiers or 0)
+        else:
+            for letter in text:
+                if PLATFORM == Platform.CHROME:
+                    _chrome_server.input.dispatchKeyEvent("char", string=letter)
+                else:
+                    if letter == "\n":
+                        autopy.key.tap(autopy.key.K_RETURN, modifiers or 0)
+                    else:
+                        autopy.key.tap(letter, modifiers or 0)
 
     @staticmethod
     def getClipboard():
