@@ -151,7 +151,6 @@ class Region(Rectangle):
             region_img = np.array(img.img.split()[Settings.Channel])
             target_img = np.array(target.img.img.split()[Settings.Channel])
 
-        _conv = time()
         rw, rh = region_img.shape[::-1]
         tw, th = target_img.shape[::-1]
 
@@ -181,14 +180,10 @@ class Region(Rectangle):
 
         if self._debug:
             self._display_matches(region_img, matches)
-            # cv2.imwrite('img1.png', region_img)
-            # cv2.imwrite('img2.png', target_img)
-            # cv2.imwrite('img3.png', res * 255)
-            # cv2.imwrite('img.png', img_rgb)
 
         log.debug(
-            "Searching for %r within %r: %d matches [%.3fs: %.3fs conv]",
-            target, img, len(matches), time() - _start, _conv - _start
+            "Searching for %r within %r: %d matches [%.3fs]",
+            target, img, len(matches), time() - _start
         )
         if not matches:
             raise FindFailed("Couldn't find target %r" % target)
@@ -219,13 +214,7 @@ class Region(Rectangle):
                 cv2.LINE_AA
             )
 
-        try:
-            raise Exception("Just dump")
-            # cv2.imshow('region', img)
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()
-        except:  # cv2 build with --no-gui
-            cv2.imwrite('region.png', img)
+        cv2.imwrite('region.png', img)
 
     def wait(self, target: Union[Pattern, str], seconds: float=None) -> 'Match':
         until = time() + (seconds or self.autoWaitTimeout)
