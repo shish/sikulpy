@@ -9,9 +9,9 @@ setup(
     author_email='webmaster@shishnet.org',
     install_requires=[
         "autopy3",
-        "pyscreenshot",
         "pillow",
         "numpy",
+        "mss",
         #"opencv",
     ],
     url='https://github.com/shish/sikulpy',

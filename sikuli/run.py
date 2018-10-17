@@ -10,8 +10,6 @@ from sikuli import *
 logging.captureWarnings(True)
 logging.getLogger("sikuli").setLevel(logging.WARNING)
 logging.getLogger("PIL").setLevel(logging.WARNING)
-logging.getLogger("easyprocess").setLevel(logging.WARNING)
-logging.getLogger("pyscreenshot").setLevel(logging.WARNING)
 
 
 def reload(module: str) -> None:

@@ -1,4 +1,3 @@
-import pyscreenshot  # EXT
 import warnings
 import platform
 import subprocess
@@ -11,17 +10,12 @@ from typing import Tuple
 from PIL import Image as PILImage  # EXT
 
 import autopy3 as autopy  # EXT
+import mss  # EXT
 
 try:
     import devtools  # EXT
 except ImportError:
     pass
-
-try:
-    import ctypes
-    _native = ctypes.CDLL("csikuli.so")
-except OSError:
-    _native = None
 
 
 from .image import Image
@@ -190,15 +184,13 @@ class Robot(object):
     # screen
     @staticmethod
     def getNumberScreens() -> int:
-        if PLATFORM == Platform.LINUX and _native:
-            return _native.getNumberScreens()
-        elif PLATFORM == Platform.VNC:
+        if PLATFORM == Platform.VNC:
             return 1
         elif PLATFORM == Platform.CHROME:
             return 1
         else:
-            warnings.warn('Robot.getNumberScreens() not implemented')  # FIXME
-        return 1
+            with mss.mss() as sct:
+                return len(sct.monitors) - 1
 
     @staticmethod
     def screenSize() -> Tuple[int, int, int, int]:
@@ -217,23 +209,21 @@ class Robot(object):
             js = _chrome_server.page.captureScreenshot()
             raw = b64decode(js['data'])
             data = PILImage.open(BytesIO(raw))
-        elif PLATFORM == Platform.LINUX and _native:
-            x, y, w, h = bbox
-
-            size = w * h
-            objlength = size * 3
-
-            _native.capture.argtypes = []
-            result = (ctypes.c_ubyte*objlength)()
-
-            _native.capture(x, y, w, h, result)
-            data = PILImage.frombuffer('RGB', (w, h), result, 'raw', 'RGB', 0, 1)
         else:
-            bbox2 = (
-                bbox[0], bbox[1],
-                bbox[0] + bbox[2], bbox[1] + bbox[3]
-            )
-            data = pyscreenshot.grab(bbox=bbox2, childprocess=False)
+            with mss.mss() as sct:
+                sct_img = sct.grab({
+                    "left": bbox[0],
+                    "top": bbox[1],
+                    "width": bbox[2],
+                    "height": bbox[3]
+                })
+                data = PILImage.frombytes(
+                    "RGB",
+                    sct_img.size,
+                    sct_img.bgra,
+                    "raw",
+                    "BGRX"
+                )
 
         if bbox:
             if data.size[0] == bbox[2] * 2:
