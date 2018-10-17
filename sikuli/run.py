@@ -40,6 +40,10 @@ def main() -> int:
     args = parser.parse_args()
 
     if args.debug:
+        logging.basicConfig(
+            format="%(asctime)-15s %(filename)s:%(lineno)d %(message)s",
+            level=logging.DEBUG,
+        )
         logging.getLogger("sikuli").setLevel(logging.DEBUG)
 
     if args.debugger:
