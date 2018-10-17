@@ -148,17 +148,13 @@ class Region(Rectangle):
         from .match import Match
 
         _start = time()
-        region_img = np.array(img.img.convert('RGB'))
-        target_img = np.array(target.img.img.convert('RGB'))
 
         if self._channel is None:
-            region_img = cv2.cvtColor(region_img, cv2.COLOR_BGR2GRAY)
-            target_img = cv2.cvtColor(target_img, cv2.COLOR_BGR2GRAY)
+            region_img = np.array(img.img.convert('L'))
+            target_img = np.array(target.img.img.convert('L'))
         else:
-            # region_img = region_img[:,:,self._channel]
-            # target_img = target_img[:,:,self._channel]
-            region_img = cv2.split(region_img)[self._channel]
-            target_img = cv2.split(target_img)[self._channel]
+            region_img = np.array(img.img.split()[self._channel])
+            target_img = np.array(target.img.img.split()[self._channel])
 
         _conv = time()
         rw, rh = region_img.shape[::-1]
