@@ -46,7 +46,6 @@ class Region(Rectangle):
         # FIXME: unofficial
         self._frozen = None
         self._debug = False
-        self._channel = None
 
     @unofficial
     def freeze(self) -> None:
@@ -55,10 +54,6 @@ class Region(Rectangle):
     @unofficial
     def thaw(self) -> None:
         self._frozen = None
-
-    @unofficial
-    def setChannel(self, channel):
-        self._channel = channel
 
     # attributes
 
@@ -149,12 +144,12 @@ class Region(Rectangle):
 
         _start = time()
 
-        if self._channel is None:
+        if Settings.Channel is None:
             region_img = np.array(img.img.convert('L'))
             target_img = np.array(target.img.img.convert('L'))
         else:
-            region_img = np.array(img.img.split()[self._channel])
-            target_img = np.array(target.img.img.split()[self._channel])
+            region_img = np.array(img.img.split()[Settings.Channel])
+            target_img = np.array(target.img.img.split()[Settings.Channel])
 
         _conv = time()
         rw, rh = region_img.shape[::-1]

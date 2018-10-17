@@ -5,6 +5,8 @@ class Settings(object):
     autoWaitTimeout = 0
 
     Scale = 1  # FIXME: unofficial
+    Channel = None  # FIXME: unofficial
+
     ImagePaths = []  # type: List[str]
 
     # Either option might be switched on (True) or off (False), to show or
