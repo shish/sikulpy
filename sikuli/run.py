@@ -36,8 +36,6 @@ def main() -> int:
     parser.add_argument('-d', '--debug', default=False, action='store_true')
     parser.add_argument('-D', '--debugger', default=False, action='store_true')
     parser.add_argument('-s', '--scale', type=float, default=1.0)
-    parser.add_argument('-V', '--vnc', type=str)
-    parser.add_argument('-C', '--chrome', type=str)
     parser.add_argument('script')
     args = parser.parse_args()
 
@@ -50,12 +48,6 @@ def main() -> int:
             pudb.set_interrupt_handler()
         except ImportError:
             pass
-
-    if args.vnc:
-        robot.setVnc(args.vnc)
-
-    if args.chrome:
-        robot.setChrome(args.chrome)
 
     Settings.Scale = args.scale
     run(args.script)

@@ -3,20 +3,12 @@ import platform
 import subprocess
 from enum import Enum
 from time import time
-from base64 import b64decode
-from io import BytesIO
 from typing import Tuple
 
 from PIL import Image as PILImage  # EXT
 
 import autopy3 as autopy  # EXT
 import mss  # EXT
-
-try:
-    import devtools  # EXT
-except ImportError:
-    pass
-
 
 from .image import Image
 from .key import Mouse
@@ -31,27 +23,9 @@ class Platform(Enum):
     WINDOWS = 'Windows'
     LINUX = 'Linux'
     DARWIN = 'Darwin'
-    VNC = 'VNC'
-    CHROME = 'Chrome'
 
 
 PLATFORM = Platform(platform.system())
-
-
-_vnc_server = None
-_chrome_server = None  # type: devtools.Client
-
-
-def setVnc(server):
-    global PLATFORM, _vnc_server
-    PLATFORM = Platform.VNC
-    _vnc_server = server
-
-
-def setChrome(server):
-    global PLATFORM, _chrome_server
-    PLATFORM = Platform.CHROME
-    _chrome_server = devtools.Client(server)
 
 
 class Robot(object):
@@ -59,12 +33,6 @@ class Robot(object):
         Mouse.LEFT: autopy.mouse.LEFT_BUTTON,
         Mouse.RIGHT: autopy.mouse.RIGHT_BUTTON,
         Mouse.MIDDLE: autopy.mouse.CENTER_BUTTON,
-    }
-
-    chromeMouseMap = {
-        Mouse.LEFT: "left",
-        Mouse.RIGHT: "right",
-        Mouse.MIDDLE: "midle",
     }
 
     @staticmethod
@@ -75,58 +43,35 @@ class Robot(object):
         log.info("mouseMove(%r)", xy)
         x, y = int(xy[0]), int(xy[1])
 
-        if PLATFORM == Platform.CHROME:
-            _chrome_server.mousePos = x, y
-            _chrome_server.input.dispatchMouseEvent("mouseMoved", x, y)
-        else:
-            autopy.mouse.move(x, y)
+        autopy.mouse.move(x, y)
 
     @staticmethod
     def mouseDown(button):
         # log.info("mouseDown(%r)", button)
-        if PLATFORM == Platform.CHROME:
-            x, y = _chrome_server.mousePos
-            _chrome_server.input.dispatchMouseEvent(
-                "mousePressed", x, y, button=Robot.chromeMouseMap[button])
-        else:
-            autopy.mouse.toggle(True, Robot.autopyMouseMap[button])
+        autopy.mouse.toggle(True, Robot.autopyMouseMap[button])
 
     @staticmethod
     def mouseUp(button):
         # log.info("mouseUp(%r)", button)
-        if PLATFORM == Platform.CHROME:
-            x, y = _chrome_server.mousePos
-            _chrome_server.input.dispatchMouseEvent(
-                "mouseReleased", x, y, button=Robot.chromeMouseMap[button])
-        else:
-            autopy.mouse.toggle(False, Robot.autopyMouseMap[button])
+        autopy.mouse.toggle(False, Robot.autopyMouseMap[button])
 
     @staticmethod
     def getMouseLocation():
         """
         :rtype: (int, int)
         """
-        if PLATFORM == Platform.CHROME:
-            return _chrome_server.mousePos
-        else:
-            return autopy.mouse.get_pos()
+        return autopy.mouse.get_pos()
 
     # keyboard
     @staticmethod
     def keyDown(key):
         log.info("keyDown(%r)", key)
-        if PLATFORM == Platform.CHROME:
-            _chrome_server.input.dispatchKeyEvent("keyDown", string=key)
-        else:
-            autopy.key.toggle(key, True)
+        autopy.key.toggle(key, True)
 
     @staticmethod
     def keyUp(key):
         log.info("keyUp(%r)", key)
-        if PLATFORM == Platform.CHROME:
-            _chrome_server.input.dispatchKeyEvent("keyUp", string=key)
-        else:
-            autopy.key.toggle(key, False)
+        autopy.key.toggle(key, False)
 
     @staticmethod
     @unofficial
@@ -136,13 +81,10 @@ class Robot(object):
             autopy.key.tap(text, modifiers or 0)
         else:
             for letter in text:
-                if PLATFORM == Platform.CHROME:
-                    _chrome_server.input.dispatchKeyEvent("char", string=letter)
+                if letter == "\n":
+                    autopy.key.tap(autopy.key.K_RETURN, modifiers or 0)
                 else:
-                    if letter == "\n":
-                        autopy.key.tap(autopy.key.K_RETURN, modifiers or 0)
-                    else:
-                        autopy.key.tap(letter, modifiers or 0)
+                    autopy.key.tap(letter, modifiers or 0)
 
     @staticmethod
     def getClipboard():
@@ -184,46 +126,32 @@ class Robot(object):
     # screen
     @staticmethod
     def getNumberScreens() -> int:
-        if PLATFORM == Platform.VNC:
-            return 1
-        elif PLATFORM == Platform.CHROME:
-            return 1
-        else:
-            with mss.mss() as sct:
-                return len(sct.monitors) - 1
+        with mss.mss() as sct:
+            return len(sct.monitors) - 1
 
     @staticmethod
     def screenSize() -> Tuple[int, int, int, int]:
-        if PLATFORM == Platform.CHROME:
-            img = Robot.capture()
-            w, h = img.w, img.h
-        else:
-            w, h = autopy.screen.get_size()
-        return 0, 0, w, h
+        with mss.mss() as sct:
+            return 0, 0, sct.monitors[0]["width"], sct.monitors[0]["height"]
 
     @staticmethod
     def capture(bbox: Tuple[int, int, int, int]=None) -> Image:
         _start = time()
 
-        if PLATFORM == Platform.CHROME:
-            js = _chrome_server.page.captureScreenshot()
-            raw = b64decode(js['data'])
-            data = PILImage.open(BytesIO(raw))
-        else:
-            with mss.mss() as sct:
-                sct_img = sct.grab({
-                    "left": bbox[0],
-                    "top": bbox[1],
-                    "width": bbox[2],
-                    "height": bbox[3]
-                })
-                data = PILImage.frombytes(
-                    "RGB",
-                    sct_img.size,
-                    sct_img.bgra,
-                    "raw",
-                    "BGRX"
-                )
+        with mss.mss() as sct:
+            sct_img = sct.grab({
+                "left": bbox[0],
+                "top": bbox[1],
+                "width": bbox[2],
+                "height": bbox[3]
+            })
+            data = PILImage.frombytes(
+                "RGB",
+                sct_img.size,
+                sct_img.bgra,
+                "raw",
+                "BGRX"
+            )
 
         if bbox:
             if data.size[0] == bbox[2] * 2:
@@ -260,7 +188,5 @@ end tell
                 shell=True
             )
             p.wait()
-        elif PLATFORM == Platform.CHROME:
-            _chrome_server.focus(application)
         else:
             warnings.warn('App.focus(%r) not implemented for %r' % (application, PLATFORM))  # FIXME
