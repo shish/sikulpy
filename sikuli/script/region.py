@@ -9,6 +9,7 @@ from time import time, sleep
 from enum import Enum
 import logging
 import warnings
+from pprint import pprint
 
 from .settings import Settings
 from .rectangle import Rectangle
@@ -179,7 +180,7 @@ class Region(Rectangle):
         matches = list(reversed(sorted(matches)))
 
         if self._debug:
-            self._display_matches(region_img, matches)
+            pprint(matches)
 
         log.debug(
             "Searching for %r within %r: %d matches [%.3fs]",
@@ -189,32 +190,6 @@ class Region(Rectangle):
             raise FindFailed("Couldn't find target %r" % target)
         self._last_matches = matches
         return matches
-
-    def _display_matches(self, img: np.array, matches: List['Match']) -> None:
-        from pprint import pprint
-        pprint(matches)
-
-        for m in matches:
-            for n in range(4, 0, -1):
-                cv2.rectangle(
-                    img,
-                    tuple([int(v) for v in m.getTopLeft().getXY()]),
-                    tuple([int(v) for v in m.getBottomRight().getXY()]),
-                    (0, 0, 0) if n % 2 == 0 else (255, 255, 255),
-                    n
-                )
-            cv2.putText(
-                img,
-                "%.2f" % m.getScore(),
-                tuple([int(v) for v in m.getBottomLeft().getXY()]),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                1,
-                (0, 0, 0),
-                2,
-                cv2.LINE_AA
-            )
-
-        cv2.imwrite('region.png', img)
 
     def wait(self, target: Union[Pattern, str], seconds: float=None) -> 'Match':
         until = time() + (seconds or self.autoWaitTimeout)
