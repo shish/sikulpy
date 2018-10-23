@@ -9,6 +9,7 @@ from PIL import Image as PILImage  # EXT
 
 import autopy3 as autopy  # EXT
 import mss  # EXT
+import pyperclip  # EXT
 
 from .image import Image
 from .key import Mouse
@@ -87,39 +88,16 @@ class Robot(object):
                     autopy.key.tap(letter, modifiers or 0)
 
     @staticmethod
-    def getClipboard():
-        """
-        :rtype: str
-        """
-        if PLATFORM == Platform.LINUX:
-            return subprocess.Popen(
-                "xclip -o",
-                shell=True,
-                stdout=subprocess.PIPE
-            ).stdout.read().decode("utf8")
-        else:
-            warnings.warn('Robot.getClipboard() not implemented')  # FIXME
-            return ""
+    def getClipboard() -> str:
+        return pyperclip.paste()
 
     @staticmethod
     @unofficial
     def putClipboard(text: str) -> None:
-        if PLATFORM == Platform.LINUX:
-            p = subprocess.run(
-                "xclip",
-                input=text,
-                shell=True,
-            )
-            p.wait()
-        else:
-            warnings.warn('Robot.putClipboard() not implemented')  # FIXME
+        pyperclip.copy(text)
 
     @staticmethod
-    def isLockOn(key):
-        """
-        :param key:
-        :rtype: bool
-        """
+    def isLockOn(key) -> bool:
         warnings.warn('Robot.isLockOn(%r) not implemented' % key)  # FIXME
         return False
 

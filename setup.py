@@ -12,6 +12,7 @@ setup(
         "pillow",
         "numpy",
         "mss",
+        "pyperclip",
         #"opencv",
     ],
     url='https://github.com/shish/sikulpy',
