@@ -37,10 +37,7 @@ class Robot(object):
     }
 
     @staticmethod
-    def mouseMove(xy):
-        """
-        :param (int, int) xy:
-        """
+    def mouseMove(xy: Tuple[int, int]):
         log.info("mouseMove(%r)", xy)
         x, y = int(xy[0]), int(xy[1])
 
@@ -57,10 +54,7 @@ class Robot(object):
         autopy.mouse.toggle(False, Robot.autopyMouseMap[button])
 
     @staticmethod
-    def getMouseLocation():
-        """
-        :rtype: (int, int)
-        """
+    def getMouseLocation() -> Tuple[int, int]:
         return autopy.mouse.get_pos()
 
     # keyboard
