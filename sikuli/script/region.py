@@ -138,7 +138,7 @@ class Region(Rectangle):
         if not isinstance(target, Pattern):
             target = Pattern(target)
 
-        img = self._frozen or Robot.capture((self.x, self.y, self.w, self.h))
+        region = self._frozen or Robot.capture((self.x, self.y, self.w, self.h))
         matches = []
 
         from .match import Match
@@ -146,19 +146,16 @@ class Region(Rectangle):
         _start = time()
 
         if Settings.Channel is None:
-            region_img = np.array(img.img.convert('L'))
-            target_img = np.array(target.img.img.convert('L'))
+            region_img = region.img.convert('L')
+            target_img = target.img.img.convert('L')
         else:
-            region_img = np.array(img.img.split()[Settings.Channel])
-            target_img = np.array(target.img.img.split()[Settings.Channel])
+            region_img = region.img.split()[Settings.Channel]
+            target_img = target.img.img.split()[Settings.Channel]
 
-        rw, rh = region_img.shape[::-1]
-        tw, th = target_img.shape[::-1]
-
-        if tw > rw or th > rh:
+        if target_img.width > region_img.width or target_img.height > region_img.height:
             raise FindFailed("%r is larger than %r" % (target, self))
 
-        res = cv2.matchTemplate(region_img, target_img, cv2.TM_CCOEFF_NORMED)
+        res = cv2.matchTemplate(np.array(region_img), np.array(target_img), cv2.TM_CCOEFF_NORMED)
         loc = np.where(res >= target.similarity)
         for pt in zip(*loc[::-1]):
             # if there is a better match right next to this one, ignore this one
@@ -170,7 +167,7 @@ class Region(Rectangle):
                 continue
 
             m = Match(
-                Rectangle(self.x + int(pt[0]), self.y + int(pt[1]), tw, th),
+                Rectangle(self.x + int(pt[0]), self.y + int(pt[1]), target_img.width, target_img.height),
                 float(res[pt[1], pt[0]]),
                 target.getTargetOffset()
             )
@@ -184,7 +181,7 @@ class Region(Rectangle):
 
         log.debug(
             "Searching for %r within %r: %d matches [%.3fs]",
-            target, img, len(matches), time() - _start
+            target, region, len(matches), time() - _start
         )
         if not matches:
             raise FindFailed("Couldn't find target %r" % target)
