@@ -171,6 +171,7 @@ class Region(Rectangle):
                 float(res[pt[1], pt[0]]),
                 target.getTargetOffset()
             )
+            m._screen = self._screen
             m._name = target.getFilename()
             matches.append(m)
 
@@ -378,7 +379,19 @@ class Region(Rectangle):
     # OCR
 
     def text(self) -> str:
-        raise NotImplementedError('Region.text() not implemented')  # FIXME
+        try:
+            import pytesseract  # EXT
+            pil = Robot.capture((self.x, self.y, self.w, self.h)).img
+            cvimg = cv2.cvtColor(np.array(pil.convert('RGB')), cv2.COLOR_RGB2BGR)
+            _, cvimg = cv2.threshold(cvimg, 127, 255, cv2.THRESH_BINARY)
+            # cvimg = cv.adaptiveThreshold(
+            #     img, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C,
+            #     cv.THRESH_BINARY, 11, 2)
+            # cv2.imshow("row", cvimg)
+            # img = PILImage.frombytes("L", (cvimg.shape[0], cvimg.shape[1]), cvimg.tostring())
+            return pytesseract.image_to_string(cvimg)
+        except ImportError:
+            raise NotImplementedError('Region.text() requires pytesseract')
 
     # error handling
 
