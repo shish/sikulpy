@@ -10,7 +10,7 @@ def run(img: str, similarity: float) -> None:
     p = Pattern(img).similar(similarity)
     s = Screen(0)
     s._debug = True
-    s.exists(p)
+    s.hover(p)
 
 
 def main() -> int:
