@@ -1,18 +1,18 @@
 import sys
 from typing import Union, List
 
-from .app import App
-from .env import Env
-from .finder import Finder
-from .location import Location
-from .match import Match
-from .pattern import Pattern
-from .rectangle import Rectangle
-from .region import Region
-from .screen import Screen
-from .settings import Settings
-from .key import Key, KeyModifier, Mouse
-from .robot import Robot
+from .app import App  # noqa
+from .env import Env  # noqa
+from .finder import Finder  # noqa
+from .location import Location  # noqa
+from .match import Match  # noqa
+from .pattern import Pattern  # noqa
+from .rectangle import Rectangle  # noqa
+from .region import Region  # noqa
+from .screen import Screen  # noqa
+from .settings import Settings  # noqa
+from .key import Key, KeyModifier, Mouse  # noqa
+from .robot import Robot  # noqa
 
 desktop = Screen(0)
 

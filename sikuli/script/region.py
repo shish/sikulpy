@@ -162,8 +162,9 @@ class Region(Rectangle):
         loc = np.where(res >= target.similarity)
         for pt in zip(*loc[::-1]):
             # if there is a better match right next to this one, ignore this one
+            x, y = pt
             local_max = np.amax(
-                res[max(pt[1] - 2, 0) : pt[1] + 2, max(pt[0] - 2, 0) : pt[0] + 2]
+                res[max(y - 2, 0) : y + 2, max(x - 2, 0) : x + 2]  # noqa
             )
             if res[pt[1], pt[0]] < local_max:
                 continue

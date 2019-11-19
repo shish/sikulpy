@@ -2,10 +2,11 @@
 
 import os
 import runpy
+import sys
 import logging
 import argparse
 
-from sikuli import *
+from sikuli import Settings
 
 logging.captureWarnings(True)
 logging.getLogger("sikuli").setLevel(logging.WARNING)

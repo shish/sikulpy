@@ -1,7 +1,8 @@
-from sikuli import *
 import sys
 import argparse
 import logging
+
+from sikuli import Settings, Pattern, Screen
 
 Settings.ImagePaths = ["."]
 

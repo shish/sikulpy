@@ -1,5 +1,4 @@
 import platform
-import warnings
 
 from .location import Location
 from .robot import Robot

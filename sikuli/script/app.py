@@ -1,5 +1,3 @@
-import warnings
-
 from .region import Region
 from .robot import Robot
 
