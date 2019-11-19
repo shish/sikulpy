@@ -13,14 +13,14 @@ setup(
         "numpy",
         "mss",
         "pyperclip",
-        #"opencv",
+        "opencv-python",
     ],
     url='https://github.com/shish/sikulpy',
     classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: Console",
         "Intended Audience :: Developers",
-        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
         "Topic :: Utilities",
     ],
     packages=[
