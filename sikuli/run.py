@@ -33,10 +33,10 @@ def run(folder: str) -> None:
 def main() -> int:
     # FIXME: sikuli CLI compat
     parser = argparse.ArgumentParser()
-    parser.add_argument('-d', '--debug', default=False, action='store_true')
-    parser.add_argument('-D', '--debugger', default=False, action='store_true')
-    parser.add_argument('-s', '--scale', type=float, default=1.0)
-    parser.add_argument('script')
+    parser.add_argument("-d", "--debug", default=False, action="store_true")
+    parser.add_argument("-D", "--debugger", default=False, action="store_true")
+    parser.add_argument("-s", "--scale", type=float, default=1.0)
+    parser.add_argument("script")
     args = parser.parse_args()
 
     if args.debug:
@@ -49,6 +49,7 @@ def main() -> int:
     if args.debugger:
         try:
             import pudb
+
             pudb.set_interrupt_handler()
         except ImportError:
             pass

@@ -15,18 +15,18 @@ class Location(object):
     def __repr__(self) -> str:
         return "Location(%r, %r)" % (self.x, self.y)
 
-    def __eq__(self, other: 'Location') -> bool:
+    def __eq__(self, other: "Location") -> bool:
         return self.x == other.x and self.y == other.y
 
-    def __add__(self, other: 'Location') -> 'Location':
+    def __add__(self, other: "Location") -> "Location":
         return Location(self.x + other.x, self.y + other.y)
 
     @unofficial
-    def __sub__(self, other: 'Location') -> 'Location':
+    def __sub__(self, other: "Location") -> "Location":
         return Location(self.x - other.x, self.y - other.y)
 
     @unofficial
-    def __mul__(self, factor: float) -> 'Location':
+    def __mul__(self, factor: float) -> "Location":
         return Location(self.x * factor, self.y * factor)
 
     @unofficial
@@ -43,17 +43,17 @@ class Location(object):
         self.x = x
         self.y = y
 
-    def offset(self, dx: int, dy: int) -> 'Location':
+    def offset(self, dx: int, dy: int) -> "Location":
         return Location(self.x + dx, self.y + dy)
 
-    def above(self, dy: int) -> 'Location':
+    def above(self, dy: int) -> "Location":
         return Location(self.x, self.y - dy)
 
-    def below(self, dy: int) -> 'Location':
+    def below(self, dy: int) -> "Location":
         return Location(self.x, self.y + dy)
 
-    def left(self, dx: int) -> 'Location':
+    def left(self, dx: int) -> "Location":
         return Location(self.x - dx, self.y)
 
-    def right(self, dx: int) -> 'Location':
+    def right(self, dx: int) -> "Location":
         return Location(self.x + dx, self.y)

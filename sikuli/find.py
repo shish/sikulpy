@@ -15,10 +15,10 @@ def run(img: str, similarity: float) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument('-d', '--debug', default=False, action='store_true')
-    parser.add_argument('-s', '--scale', type=float, default=1.0)
-    parser.add_argument('-S', '--similarity', type=float, default=0.7)
-    parser.add_argument('img')
+    parser.add_argument("-d", "--debug", default=False, action="store_true")
+    parser.add_argument("-s", "--scale", type=float, default=1.0)
+    parser.add_argument("-S", "--similarity", type=float, default=0.7)
+    parser.add_argument("img")
     args = parser.parse_args()
     if args.debug:
         logging.getLogger("sikuli").setLevel(logging.DEBUG)

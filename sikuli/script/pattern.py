@@ -27,13 +27,13 @@ class Pattern(object):
         else:
             return "Pattern(%r, %r)" % (self.img, self._targetOffset)
 
-    def _copy(self) -> 'Pattern':
+    def _copy(self) -> "Pattern":
         p = Pattern(self.filename)
         p.similarity = self.similarity
         p._targetOffset = self._targetOffset
         return p
 
-    def similar(self, similarity: float) -> 'Pattern':
+    def similar(self, similarity: float) -> "Pattern":
         """
         Return a new Pattern object containing the same attributes (image,
         click point) with the minimum similarity set to the specified value.
@@ -42,7 +42,7 @@ class Pattern(object):
         p.similarity = similarity
         return p
 
-    def exact(self) -> 'Pattern':
+    def exact(self) -> "Pattern":
         """
         Return a new Pattern object containing the same attributes (image,
         click point) with the minimum similarity set to 1.0, which means
@@ -50,7 +50,7 @@ class Pattern(object):
         """
         return self.similar(1.0)
 
-    def targetOffset(self, dx: int, dy: int) -> 'Pattern':
+    def targetOffset(self, dx: int, dy: int) -> "Pattern":
         """
         Return a new Pattern object containing the same attributes (image,
         similarity), but a different definition for the click. By default,
@@ -61,8 +61,7 @@ class Pattern(object):
         """
         p = self._copy()
         p._targetOffset = p._targetOffset.offset(
-            dx*Settings.Scale,
-            dy*Settings.Scale
+            dx * Settings.Scale, dy * Settings.Scale
         )
         return p
 

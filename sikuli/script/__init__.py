@@ -22,19 +22,25 @@ def find(ps: Union[Pattern, str]) -> Match:
 
 
 def popup(text: str, title: str) -> None:
-    raise NotImplementedError('sikuli.popup(%r, %r) not implemented' % (text, title))  # FIXME
+    raise NotImplementedError(
+        "sikuli.popup(%r, %r) not implemented" % (text, title)
+    )  # FIXME
 
 
 def input_(text: str, default: str) -> str:
-    raise NotImplementedError('sikuli.input(%r, %r) not implemented' % (text, default))  # FIXME
+    raise NotImplementedError(
+        "sikuli.input(%r, %r) not implemented" % (text, default)
+    )  # FIXME
 
 
 def load(path: str):
-    raise NotImplementedError('sikuli.load(%r) not implemented' % (path, ))  # FIXME
+    raise NotImplementedError("sikuli.load(%r) not implemented" % (path,))  # FIXME
 
 
 def setShowActions(sa: bool):
-    raise NotImplementedError('sikuli.setShowActions(%r) not implemented' % (sa, ))  # FIXME
+    raise NotImplementedError(
+        "sikuli.setShowActions(%r) not implemented" % (sa,)
+    )  # FIXME
 
 
 def exit(code: int) -> None:
@@ -63,8 +69,10 @@ def removeImagePath(path: str) -> None:
 
 
 def getBundlePath() -> List[str]:
-    raise NotImplementedError('sikuli.getBundlePath() not implemented')  # FIXME
+    raise NotImplementedError("sikuli.getBundlePath() not implemented")  # FIXME
 
 
 def setBundlePath(path: bool):
-    raise NotImplementedError('sikuli.setBundlePath(%r) not implemented' % (path, ))  # FIXME
+    raise NotImplementedError(
+        "sikuli.setBundlePath(%r) not implemented" % (path,)
+    )  # FIXME

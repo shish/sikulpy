@@ -30,6 +30,8 @@ class Screen(Region):
         img.save(fn)
         return fn
 
-    def selectRegion(self, text: str=None) -> Region:
+    def selectRegion(self, text: str = None) -> Region:
         # interactive selection, with label
-        raise NotImplementedError('Screen.selectRegion(%r) not implemented' % text)  # FIXME
+        raise NotImplementedError(
+            "Screen.selectRegion(%r) not implemented" % text
+        )  # FIXME

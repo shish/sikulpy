@@ -31,11 +31,12 @@ class Match(Region):
         """
         return self.getCenter() + self._targetOffset
 
-    def __lt__(self, other: 'Match') -> bool:
+    def __lt__(self, other: "Match") -> bool:
         return self.getScore() < other.getScore()
 
     def __repr__(self) -> str:
         return "%s(%r, %.3f)" % (
             self.__class__.__name__,
-            self._name or self.getRect(), self.getScore()
+            self._name or self.getRect(),
+            self.getScore(),
         )

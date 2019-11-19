@@ -1,13 +1,13 @@
-
 from .location import Location
 
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from .region import Region
 
 
 class Rectangle(object):
-    def __init__(self, x: int=0, y: int=0, w: int=0, h: int=0) -> None:
+    def __init__(self, x: int = 0, y: int = 0, w: int = 0, h: int = 0) -> None:
         self.x = x
         self.y = y
         self.w = w
@@ -16,18 +16,16 @@ class Rectangle(object):
     def __repr__(self) -> str:
         return "%s(%d, %d, %d, %d)" % (
             self.__class__.__name__,
-            self.x, self.y, self.w, self.h
+            self.x,
+            self.y,
+            self.w,
+            self.h,
         )
 
-    def __eq__(self, b: 'Rectangle') -> bool:
-        return (
-            self.x == b.x and
-            self.y == b.y and
-            self.w == b.w and
-            self.h == b.h
-        )
+    def __eq__(self, b: "Rectangle") -> bool:
+        return self.x == b.x and self.y == b.y and self.w == b.w and self.h == b.h
 
-    def __ne__(self, b: 'Rectangle') -> bool:
+    def __ne__(self, b: "Rectangle") -> bool:
         return not self.__eq__(b)
 
     # set
@@ -44,11 +42,11 @@ class Rectangle(object):
     def setH(self, h: int) -> None:
         self.h = h
 
-    def moveTo(self, location: Location) -> 'Rectangle':
+    def moveTo(self, location: Location) -> "Rectangle":
         self.x, self.y = location.x, location.y
         return self
 
-    def setRect(self, rect: 'Rectangle') -> None:
+    def setRect(self, rect: "Rectangle") -> None:
         self.x = rect.x
         self.y = rect.y
         self.w = rect.w
@@ -56,7 +54,7 @@ class Rectangle(object):
 
     setROI = setRect
 
-    def morphTo(self, reg: 'Region') -> 'Rectangle':
+    def morphTo(self, reg: "Region") -> "Rectangle":
         self.setRect(reg)
         return self
 
@@ -74,7 +72,7 @@ class Rectangle(object):
     def getH(self) -> int:
         return self.h
 
-    def getRect(self) -> 'Rectangle':
+    def getRect(self) -> "Rectangle":
         return Rectangle(self.x, self.y, self.w, self.h)
 
     def getCenter(self) -> Location:

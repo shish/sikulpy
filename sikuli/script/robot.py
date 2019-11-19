@@ -17,13 +17,14 @@ from .sikulpy import unofficial
 
 
 import logging
+
 log = logging.getLogger(__name__)
 
 
 class Platform(Enum):
-    WINDOWS = 'Windows'
-    LINUX = 'Linux'
-    DARWIN = 'Darwin'
+    WINDOWS = "Windows"
+    LINUX = "Linux"
+    DARWIN = "Darwin"
 
 
 PLATFORM = Platform(platform.system())
@@ -92,7 +93,7 @@ class Robot(object):
 
     @staticmethod
     def isLockOn(key) -> bool:
-        warnings.warn('Robot.isLockOn(%r) not implemented' % key)  # FIXME
+        warnings.warn("Robot.isLockOn(%r) not implemented" % key)  # FIXME
         return False
 
     # screen
@@ -107,32 +108,26 @@ class Robot(object):
             return 0, 0, sct.monitors[0]["width"], sct.monitors[0]["height"]
 
     @staticmethod
-    def capture(bbox: Tuple[int, int, int, int]=None) -> Image:
+    def capture(bbox: Tuple[int, int, int, int] = None) -> Image:
         _start = time()
 
         with mss.mss() as sct:
-            sct_img = sct.grab({
-                "left": bbox[0],
-                "top": bbox[1],
-                "width": bbox[2],
-                "height": bbox[3]
-            })
-            data = PILImage.frombytes(
-                "RGB",
-                sct_img.size,
-                sct_img.bgra,
-                "raw",
-                "BGRX"
+            sct_img = sct.grab(
+                {"left": bbox[0], "top": bbox[1], "width": bbox[2], "height": bbox[3]}
             )
+            data = PILImage.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX")
 
         if bbox:
             if data.size[0] == bbox[2] * 2:
                 log.debug("Captured image is double size, shrinking")
-                data = data.resize((data.size[0]//2, data.size[1]//2))
+                data = data.resize((data.size[0] // 2, data.size[1] // 2))
             elif data.size[0] != bbox[2]:
                 log.warning(
                     "Captured image is different size than we expected (%dx%d vs %dx%d)",
-                    data.size[0], data.size[1], bbox[2], bbox[3]
+                    data.size[0],
+                    data.size[1],
+                    bbox[2],
+                    bbox[3],
                 )
 
         log.info("capture(%r) [%.3fs]", bbox, time() - _start)
@@ -152,13 +147,16 @@ tell application "System Events"
         perform action "AXRaise" of (windows whose title is theTitle)
     end tell
 end tell
-""" % application.encode('ascii')
+""" % application.encode(
+                "ascii"
+            )
             subprocess.run("osascript", input=script, shell=True)
         elif PLATFORM == Platform.LINUX:
             p = subprocess.Popen(
-                "xdotool search --name '%s' windowactivate" % application,
-                shell=True
+                "xdotool search --name '%s' windowactivate" % application, shell=True
             )
             p.wait()
         else:
-            warnings.warn('App.focus(%r) not implemented for %r' % (application, PLATFORM))  # FIXME
+            warnings.warn(
+                "App.focus(%r) not implemented for %r" % (application, PLATFORM)
+            )  # FIXME

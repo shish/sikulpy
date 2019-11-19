@@ -1,4 +1,2 @@
-
-
 class FindFailed(Exception):
     pass

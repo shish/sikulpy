@@ -9,11 +9,15 @@ from .sikulpy import unofficial
 class Env(object):
     @staticmethod
     def addHotkey(key, modifiers, handler):
-        raise NotImplementedError('Env.addHotKey(%r, %r, %r) not implemented' % (key, modifiers, handler))  # FIXME
+        raise NotImplementedError(
+            "Env.addHotKey(%r, %r, %r) not implemented" % (key, modifiers, handler)
+        )  # FIXME
 
     @staticmethod
     def removeHotkey(key, modifiers):
-        raise NotImplementedError('Env.removeHotKey(%r, %r) not implemented' % (key, modifiers))  # FIXME
+        raise NotImplementedError(
+            "Env.removeHotKey(%r, %r) not implemented" % (key, modifiers)
+        )  # FIXME
 
     @staticmethod
     def getOS() -> str:
@@ -22,7 +26,7 @@ class Env(object):
 
     @staticmethod
     def getOSVersion() -> str:
-        raise NotImplementedError('Env.getOSVersion() not implemented')  # FIXME
+        raise NotImplementedError("Env.getOSVersion() not implemented")  # FIXME
 
     @staticmethod
     def getSikuliVersion() -> str:
