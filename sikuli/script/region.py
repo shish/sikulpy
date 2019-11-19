@@ -280,7 +280,7 @@ class Region(Rectangle):
 
     def wheel(self, target: Union[Pattern, str], button, steps=1):
         self.mouseMove(target)
-        for n in range(0, steps):
+        for _ in range(0, steps):
             self.mouseDown(button)
             sleep(0.1)
             self.mouseUp(button)
