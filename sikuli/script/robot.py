@@ -93,8 +93,7 @@ class Robot(object):
 
     @staticmethod
     def isLockOn(key) -> bool:
-        warnings.warn("Robot.isLockOn(%r) not implemented" % key)  # FIXME
-        return False
+        raise NotImplementedError("Robot.isLockOn(%r) not implemented" % key)  # FIXME
 
     # screen
     @staticmethod
@@ -157,6 +156,6 @@ end tell
             )
             p.wait()
         else:
-            warnings.warn(
+            raise NotImplementedError(
                 "App.focus(%r) not implemented for %r" % (application, PLATFORM)
             )  # FIXME

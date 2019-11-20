@@ -1,10 +1,17 @@
-from setuptools import setup
+#!/usr/bin/env python
+
+import setuptools
+from distutils.core import setup
+
+with open("README.md", "r") as fh:
+    long_description = fh.read()
 
 setup(
     name='sikulpy',
-    version='0.0.0',
+    version='0.0',
     description='An implementation of Sikuli for CPython',
-    long_description='',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     author='Shish',
     author_email='webmaster@shishnet.org',
     install_requires=[

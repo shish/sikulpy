@@ -3,6 +3,7 @@ import platform
 from .location import Location
 from .robot import Robot
 from .sikulpy import unofficial
+from ..version import VERSION
 
 
 class Env(object):
@@ -29,7 +30,7 @@ class Env(object):
 
     @staticmethod
     def getSikuliVersion() -> str:
-        return "sikulpy 0.0"
+        return "sikulpy %s" % VERSION
 
     @staticmethod
     def getClipboard() -> str:

@@ -8,7 +8,6 @@ import numpy as np  # EXT
 from time import time, sleep
 from enum import Enum
 import logging
-import warnings
 from pprint import pprint
 
 from .settings import Settings
@@ -233,27 +232,27 @@ class Region(Rectangle):
     # observing
 
     def onAppear(self, target: Union[Pattern, str], handler):
-        warnings.warn(
+        raise NotImplementedError(
             "Region.onAppear(%r, %r) not implemented" % (target, handler)
         )  # FIXME
 
     def onVanish(self, target: Union[Pattern, str], handler):
-        warnings.warn(
+        raise NotImplementedError(
             "Region.onVanish(%r, %r) not implemented" % (target, handler)
         )  # FIXME
 
     def onChange(self, target: Union[Pattern, str], handler):
-        warnings.warn(
+        raise NotImplementedError(
             "Region.onChange(%r, %r) not implemented" % (target, handler)
         )  # FIXME
 
     def observe(self, seconds: float, background=False):
-        warnings.warn(
+        raise NotImplementedError(
             "Region.observe(%r, %r) not implemented" % (seconds, background)
         )  # FIXME
 
     def stopObserver(self) -> None:
-        warnings.warn("Region.stopObserver() not implemented")  # FIXME
+        raise NotImplementedError("Region.stopObserver() not implemented")  # FIXME
 
     # actions
 
