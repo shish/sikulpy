@@ -7,7 +7,7 @@ from typing import Tuple
 
 from PIL import Image as PILImage  # EXT
 
-import autopy3 as autopy  # EXT
+import autopy  # EXT
 import mss  # EXT
 import pyperclip  # EXT
 
@@ -32,9 +32,9 @@ PLATFORM = Platform(platform.system())
 
 class Robot(object):
     autopyMouseMap = {
-        Mouse.LEFT: autopy.mouse.LEFT_BUTTON,
-        Mouse.RIGHT: autopy.mouse.RIGHT_BUTTON,
-        Mouse.MIDDLE: autopy.mouse.CENTER_BUTTON,
+        Mouse.LEFT: autopy.mouse.Button.LEFT,
+        Mouse.RIGHT: autopy.mouse.Button.RIGHT,
+        Mouse.MIDDLE: autopy.mouse.Button.MIDDLE,
     }
 
     @staticmethod
@@ -47,16 +47,17 @@ class Robot(object):
     @staticmethod
     def mouseDown(button):
         # log.info("mouseDown(%r)", button)
-        autopy.mouse.toggle(True, Robot.autopyMouseMap[button])
+        autopy.mouse.toggle(Robot.autopyMouseMap[button], True)
 
     @staticmethod
     def mouseUp(button):
         # log.info("mouseUp(%r)", button)
-        autopy.mouse.toggle(False, Robot.autopyMouseMap[button])
+        autopy.mouse.toggle(Robot.autopyMouseMap[button], False)
 
     @staticmethod
     def getMouseLocation() -> Tuple[int, int]:
-        return autopy.mouse.get_pos()
+        xy = autopy.mouse.location()
+        return int(xy[0]), int(xy[1])
 
     # keyboard
     @staticmethod
@@ -74,13 +75,13 @@ class Robot(object):
     def type(text, modifiers):
         log.info("type(%r, %r)", text, modifiers)
         if isinstance(text, int):  # individual keycode
-            autopy.key.tap(text, modifiers or 0)
+            autopy.key.tap(text, modifiers or [])
         else:
             for letter in text:
                 if letter == "\n":
-                    autopy.key.tap(autopy.key.K_RETURN, modifiers or 0)
+                    autopy.key.tap(autopy.key.Code.RETURN, modifiers or [])
                 else:
-                    autopy.key.tap(letter, modifiers or 0)
+                    autopy.key.tap(letter, modifiers or [])
 
     @staticmethod
     def getClipboard() -> str:

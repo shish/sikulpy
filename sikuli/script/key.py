@@ -2,25 +2,25 @@
 http://doc.sikuli.org/keys.html
 """
 
-import autopy3  # EXT
+import autopy  # EXT
 
 
 class Key(object):
-    ENTER = int(autopy3.key.K_RETURN)
-    UP = int(autopy3.key.K_UP)
-    DOWN = int(autopy3.key.K_DOWN)
-    LEFT = int(autopy3.key.K_LEFT)
-    RIGHT = int(autopy3.key.K_RIGHT)
-    BACKSPACE = int(autopy3.key.K_BACKSPACE)
+    ENTER = autopy.key.Code.RETURN
+    UP = autopy.key.Code.UP_ARROW
+    DOWN = autopy.key.Code.DOWN_ARROW
+    LEFT = autopy.key.Code.LEFT_ARROW
+    RIGHT = autopy.key.Code.RIGHT_ARROW
+    BACKSPACE = autopy.key.Code.BACKSPACE
     TAB = "\t"
 
 
 class KeyModifier(object):
     # these differ based on platform
-    CTRL = autopy3.key.MOD_CONTROL
-    SHIFT = autopy3.key.MOD_SHIFT
-    ALT = autopy3.key.MOD_ALT
-    META = autopy3.key.MOD_META
+    CTRL = autopy.key.Modifier.CONTROL
+    SHIFT = autopy.key.Modifier.SHIFT
+    ALT = autopy.key.Modifier.ALT
+    META = autopy.key.Modifier.META
 
     CMD = META
     WIN = META
