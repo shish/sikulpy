@@ -1,6 +1,9 @@
 env
 .env
 .env2
+.venv
+build/
+dist/
 .idea
 *.sikuli
 java/
