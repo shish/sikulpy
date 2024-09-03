@@ -51,7 +51,9 @@ class Region(Rectangle):
 
     @unofficial
     def freeze(self) -> None:
-        self._frozen = Robot.capture((int(self.x), int(self.y), int(self.w), int(self.h)))
+        self._frozen = Robot.capture(
+            (int(self.x), int(self.y), int(self.w), int(self.h))
+        )
 
     @unofficial
     def thaw(self) -> None:
@@ -139,7 +141,9 @@ class Region(Rectangle):
         if not isinstance(target, Pattern):
             target = Pattern(target)
 
-        region = self._frozen or Robot.capture((int(self.x), int(self.y), int(self.w), int(self.h)))
+        region = self._frozen or Robot.capture(
+            (int(self.x), int(self.y), int(self.w), int(self.h))
+        )
         matches = []
 
         from .match import Match
@@ -200,7 +204,9 @@ class Region(Rectangle):
         self._last_matches = matches
         return matches
 
-    def wait(self, target: t.Union[Pattern, str], seconds: t.Optional[float] = None) -> "Match":
+    def wait(
+        self, target: t.Union[Pattern, str], seconds: t.Optional[float] = None
+    ) -> "Match":
         until = time() + (seconds or self.autoWaitTimeout)
         while True:
             x = self.find(target)
@@ -212,7 +218,9 @@ class Region(Rectangle):
 
         raise FindFailed()
 
-    def waitVanish(self, target: t.Union[Pattern, str], seconds: t.Optional[float] = None) -> bool:
+    def waitVanish(
+        self, target: t.Union[Pattern, str], seconds: t.Optional[float] = None
+    ) -> bool:
         until = time() + (seconds or self.autoWaitTimeout)
         while True:
             if not self.find(target):
@@ -257,12 +265,16 @@ class Region(Rectangle):
 
     # actions
 
-    def _targetOrLast(self, target: t.Optional[t.Union[Pattern, str]]) -> t.Union[Pattern, str, Match]:
+    def _targetOrLast(
+        self, target: t.Optional[t.Union[Pattern, str]]
+    ) -> t.Union[Pattern, str, Match]:
         if target is None:
             return self.getLastMatch()
         return target
 
-    def _toLocation(self, target: t.Union[Pattern, str, Rectangle, Location]) -> Location:
+    def _toLocation(
+        self, target: t.Union[Pattern, str, Rectangle, Location]
+    ) -> Location:
         if isinstance(target, str):
             target = Pattern(target)
         if isinstance(target, Pattern):
@@ -282,7 +294,9 @@ class Region(Rectangle):
         Robot.mouseUp(button)
 
     def mouseMove(
-        self, target: t.Optional[t.Union[Pattern, str]], _delay: t.Optional[float] = None
+        self,
+        target: t.Optional[t.Union[Pattern, str]],
+        _delay: t.Optional[float] = None,
     ) -> Tuple[float, float]:
         if _delay is None:
             _delay = Settings.MoveMouseDelay
@@ -310,7 +324,11 @@ class Region(Rectangle):
             self.mouseUp(button)
             sleep(0.1)
 
-    def click(self, target: t.Optional[t.Union[Pattern, str]] = None, modifiers: t.Optional[int] = None) -> int:
+    def click(
+        self,
+        target: t.Optional[t.Union[Pattern, str]] = None,
+        modifiers: t.Optional[int] = None,
+    ) -> int:
         # FIXME: modifiers
         self.mouseMove(target)
         self.mouseDown(Mouse.LEFT)
@@ -319,7 +337,9 @@ class Region(Rectangle):
         return 1  # no. of clicks
 
     def doubleClick(
-        self, target: t.Optional[t.Union[Pattern, str]] = None, modifiers: t.Optional[int] = None
+        self,
+        target: t.Optional[t.Union[Pattern, str]] = None,
+        modifiers: t.Optional[int] = None,
     ) -> int:
         # FIXME: modifiers
         self.mouseMove(target)
@@ -333,7 +353,9 @@ class Region(Rectangle):
         return 1  # no. of double clicks
 
     def rightClick(
-        self, target: t.Optional[t.Union[Pattern, str]] = None, modifiers: t.Optional[int] = None
+        self,
+        target: t.Optional[t.Union[Pattern, str]] = None,
+        modifiers: t.Optional[int] = None,
     ) -> int:
         # FIXME: modifiers
         self.mouseMove(target)
@@ -366,7 +388,11 @@ class Region(Rectangle):
             sleep(Settings.DelayBeforeMouseDown)
         self.mouseDown(Mouse.LEFT)
 
-    def dropAt(self, target: t.Optional[t.Union[Pattern, str]] = None, delay: t.Optional[float] = None) -> None:
+    def dropAt(
+        self,
+        target: t.Optional[t.Union[Pattern, str]] = None,
+        delay: t.Optional[float] = None,
+    ) -> None:
         self.mouseMove(target)
         if delay is not None:
             sleep(delay)
@@ -403,7 +429,11 @@ class Region(Rectangle):
 
         Robot.type(text, modifiers)
 
-    def paste(self, target: t.Optional[t.Union[Pattern, str]] = None, text: t.Optional[str] = None) -> None:
+    def paste(
+        self,
+        target: t.Optional[t.Union[Pattern, str]] = None,
+        text: t.Optional[str] = None,
+    ) -> None:
         """
         Paste the text at a click point.
 
@@ -426,7 +456,9 @@ class Region(Rectangle):
         try:
             import pytesseract  # EXT
 
-            pil = Robot.capture((int(self.x), int(self.y), int(self.w), int(self.h))).img
+            pil = Robot.capture(
+                (int(self.x), int(self.y), int(self.w), int(self.h))
+            ).img
             cvimg = cv2.cvtColor(np.array(pil.convert("RGB")), cv2.COLOR_RGB2BGR)
             _, cvimg = cv2.threshold(cvimg, 127, 255, cv2.THRESH_BINARY)
             # cvimg = cv.adaptiveThreshold(

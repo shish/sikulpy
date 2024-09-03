@@ -1,6 +1,7 @@
 """
 http://doc.sikuli.org/match.html
 """
+
 import typing as t
 
 from .region import Region

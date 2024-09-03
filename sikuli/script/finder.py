@@ -10,7 +10,9 @@ class Finder(object):
         self.filename = filename
 
     def find(self, filename: str, similarity: float = 0.7):
-        raise NotImplementedError("Finder.find(%r, %r) not implemented" % (filename, similarity))  # FIXME
+        raise NotImplementedError(
+            "Finder.find(%r, %r) not implemented" % (filename, similarity)
+        )  # FIXME
 
     def hasNext(self) -> bool:
         raise NotImplementedError("Finder.hasNext() not implemented")  # FIXME

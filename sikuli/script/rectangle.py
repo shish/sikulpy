@@ -23,7 +23,13 @@ class Rectangle(object):
         )
 
     def __eq__(self, b: object) -> bool:
-        return isinstance(b, Rectangle) and self.x == b.x and self.y == b.y and self.w == b.w and self.h == b.h
+        return (
+            isinstance(b, Rectangle)
+            and self.x == b.x
+            and self.y == b.y
+            and self.w == b.w
+            and self.h == b.h
+        )
 
     def __ne__(self, b: object) -> bool:
         return not self.__eq__(b)
