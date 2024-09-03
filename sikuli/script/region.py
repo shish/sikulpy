@@ -267,7 +267,7 @@ class Region(Rectangle):
 
     def _targetOrLast(
         self, target: t.Optional[t.Union[Pattern, str]]
-    ) -> t.Union[Pattern, str, Match]:
+    ) -> t.Union[Pattern, str, "Match"]:
         if target is None:
             return self.getLastMatch()
         return target
