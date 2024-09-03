@@ -147,7 +147,9 @@ tell application "System Events"
         perform action "AXRaise" of (windows whose title is theTitle)
     end tell
 end tell
-""" % application.encode("ascii")
+""" % application.encode(
+                "ascii"
+            )
             subprocess.run("osascript", input=script, shell=True)
         elif PLATFORM == Platform.LINUX:
             p = subprocess.Popen(
