@@ -510,5 +510,5 @@ class SikuliEvent(object):
 
     type = Type.APPEAR
     pattern: t.Optional[t.Any] = None
-    match: t.Optional[Match] = None
-    changes: t.Optional[t.List[Match]] = None
+    match: t.Optional["Match"] = None
+    changes: t.Optional[t.List["Match"]] = None
