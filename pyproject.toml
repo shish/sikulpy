@@ -32,6 +32,22 @@ source = ["sikuli"]
 [tool.mypy]
 files = "sikuli"
 
+[[tool.mypy.overrides]]
+module = "autopy.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "pyperclip.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "pytesseract.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "pudb.*"
+ignore_missing_imports = true
+
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"

@@ -1,9 +1,8 @@
-import warnings
 import platform
 import subprocess
 from enum import Enum
 from time import time
-from typing import Tuple
+import typing as t
 
 from PIL import Image as PILImage  # EXT
 
@@ -38,7 +37,7 @@ class Robot(object):
     }
 
     @staticmethod
-    def mouseMove(xy: Tuple[int, int]):
+    def mouseMove(xy: t.Tuple[int, int]):
         log.info("mouseMove(%r)", xy)
         x, y = int(xy[0]), int(xy[1])
 
@@ -55,7 +54,7 @@ class Robot(object):
         autopy.mouse.toggle(Robot.autopyMouseMap[button], False)
 
     @staticmethod
-    def getMouseLocation() -> Tuple[int, int]:
+    def getMouseLocation() -> t.Tuple[int, int]:
         xy = autopy.mouse.location()
         return int(xy[0]), int(xy[1])
 
@@ -103,15 +102,16 @@ class Robot(object):
             return len(sct.monitors) - 1
 
     @staticmethod
-    def screenSize() -> Tuple[int, int, int, int]:
+    def screenSize() -> t.Tuple[int, int, int, int]:
         with mss.mss() as sct:
             return 0, 0, sct.monitors[0]["width"], sct.monitors[0]["height"]
 
     @staticmethod
-    def capture(bbox: Tuple[int, int, int, int] = None) -> Image:
+    def capture(bbox: t.Optional[t.Tuple[int, int, int, int]] = None) -> Image:
         _start = time()
 
         with mss.mss() as sct:
+            assert bbox is not None
             sct_img = sct.grab(
                 {"left": bbox[0], "top": bbox[1], "width": bbox[2], "height": bbox[3]}
             )

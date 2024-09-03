@@ -2,7 +2,7 @@
 http://doc.sikuli.org/location.html
 """
 
-from typing import Tuple
+import typing as t
 
 from .sikulpy import unofficial
 
@@ -15,8 +15,8 @@ class Location(object):
     def __repr__(self) -> str:
         return "Location(%r, %r)" % (self.x, self.y)
 
-    def __eq__(self, other: "Location") -> bool:
-        return self.x == other.x and self.y == other.y
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, Location) and self.x == other.x and self.y == other.y
 
     def __add__(self, other: "Location") -> "Location":
         return Location(self.x + other.x, self.y + other.y)
@@ -30,7 +30,7 @@ class Location(object):
         return Location(self.x * factor, self.y * factor)
 
     @unofficial
-    def getXY(self) -> Tuple[float, float]:
+    def getXY(self) -> t.Tuple[float, float]:
         return self.getX(), self.getY()
 
     def getX(self) -> float:

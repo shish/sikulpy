@@ -1,4 +1,4 @@
-from typing import List
+import typing as t
 
 
 class Settings(object):
@@ -7,7 +7,7 @@ class Settings(object):
     Scale = 1  # FIXME: unofficial
     Channel = None  # FIXME: unofficial
 
-    ImagePaths = []  # type: List[str]
+    ImagePaths: t.List[str] = []
 
     # Either option might be switched on (True) or off (False), to show or
     # hide the respective message type in the IDE console or on command line

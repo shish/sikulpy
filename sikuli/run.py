@@ -25,7 +25,7 @@ def run(folder: str) -> None:
     sys.path.append(os.path.dirname(folder))  # FIXME: adding parent is unofficial
     Settings.ImagePaths.append(folder)
     try:
-        runpy._run_module_as_main(module)
+        runpy._run_module_as_main(module)  # type: ignore
         # mod = __import__(module)
     except KeyboardInterrupt:
         pass

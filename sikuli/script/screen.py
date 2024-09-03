@@ -3,6 +3,7 @@ http://doc.sikuli.org/screen.html
 """
 
 import tempfile
+import typing as t
 
 from .region import Region
 from .rectangle import Rectangle
@@ -26,11 +27,11 @@ class Screen(Region):
         if not rect:
             rect = self.getBounds()
         fn = tempfile.mktemp(".png")
-        img = Robot.capture((rect.x, rect.y, rect.w, rect.h))
+        img = Robot.capture((int(rect.x), int(rect.y), int(rect.w), int(rect.h)))
         img.save(fn)
         return fn
 
-    def selectRegion(self, text: str = None) -> Region:
+    def selectRegion(self, text: t.Optional[str] = None) -> Region:
         # interactive selection, with label
         raise NotImplementedError(
             "Screen.selectRegion(%r) not implemented" % text

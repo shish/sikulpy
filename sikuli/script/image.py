@@ -35,7 +35,7 @@ class Image(object):
             if not full_path:
                 raise Exception("Couldn't find %r in %r" % (base, Settings.ImagePaths))
 
-            i = PILImage.open(full_path)
+            i: PILImage.Image = PILImage.open(full_path)
             if Settings.Scale != 1.0:
                 # resize to multiple of 1/scale
                 # eg scale=0.5, round to a multiple of 2

@@ -1,6 +1,7 @@
 """
 http://doc.sikuli.org/match.html
 """
+import typing as t
 
 from .region import Region
 from .rectangle import Rectangle
@@ -10,7 +11,7 @@ from .location import Location
 class Match(Region):
     def __init__(self, rect: Rectangle, sim: float, targetOffset: Location):
         Region.__init__(self, rect)
-        self._name = None
+        self._name: t.Optional[str] = None
         self._score = sim
         self._targetOffset = targetOffset
 

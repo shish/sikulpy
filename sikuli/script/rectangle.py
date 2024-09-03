@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
 
 class Rectangle(object):
-    def __init__(self, x: int = 0, y: int = 0, w: int = 0, h: int = 0) -> None:
+    def __init__(self, x: float = 0, y: float = 0, w: float = 0, h: float = 0) -> None:
         self.x = x
         self.y = y
         self.w = w
@@ -22,24 +22,24 @@ class Rectangle(object):
             self.h,
         )
 
-    def __eq__(self, b: "Rectangle") -> bool:
-        return self.x == b.x and self.y == b.y and self.w == b.w and self.h == b.h
+    def __eq__(self, b: object) -> bool:
+        return isinstance(b, Rectangle) and self.x == b.x and self.y == b.y and self.w == b.w and self.h == b.h
 
-    def __ne__(self, b: "Rectangle") -> bool:
+    def __ne__(self, b: object) -> bool:
         return not self.__eq__(b)
 
     # set
 
-    def setX(self, x: int) -> None:
+    def setX(self, x: float) -> None:
         self.x = x
 
-    def setY(self, y: int) -> None:
+    def setY(self, y: float) -> None:
         self.y = y
 
-    def setW(self, w: int) -> None:
+    def setW(self, w: float) -> None:
         self.w = w
 
-    def setH(self, h: int) -> None:
+    def setH(self, h: float) -> None:
         self.h = h
 
     def moveTo(self, location: Location) -> "Rectangle":
@@ -60,16 +60,16 @@ class Rectangle(object):
 
     # get
 
-    def getX(self) -> int:
+    def getX(self) -> float:
         return self.x
 
-    def getY(self) -> int:
+    def getY(self) -> float:
         return self.y
 
-    def getW(self) -> int:
+    def getW(self) -> float:
         return self.w
 
-    def getH(self) -> int:
+    def getH(self) -> float:
         return self.h
 
     def getRect(self) -> "Rectangle":
@@ -78,7 +78,8 @@ class Rectangle(object):
     def getCenter(self) -> Location:
         return Location(self.x + self.w // 2, self.y + self.h // 2)
 
-    getTarget = getCenter
+    def getTarget(self) -> Location:
+        return self.getCenter()
 
     def getTopLeft(self) -> Location:
         return Location(self.x, self.y)
