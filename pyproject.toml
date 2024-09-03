@@ -1,0 +1,41 @@
+[project]
+name = "sikulpy"
+version = "0.0"
+authors = [{ name = "Shish", email = "shish@shishnet.org" }]
+description = "An implementation of Sikuli for CPython"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "autopy>=4.0.0",
+    "pillow",
+    "numpy",
+    "mss",
+    "pyperclip",
+    "opencv-python",
+]
+
+[project.urls]
+Homepage = "https://github.com/shish/sikulpy"
+
+[project.optional-dependencies]
+dev = ["ruff", "mypy", "pytest-cov", "types-Pillow"]
+
+[tool.setuptools]
+py-modules = ["sikuli"]
+
+[tool.pytest.ini_options]
+addopts = "--cov --cov-report term-missing --cov-fail-under 95"
+
+[tool.coverage.run]
+source = ["sikuli"]
+
+[tool.mypy]
+files = "sikuli"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project.scripts]
+sikulpy = "sikuli.run:main"
+sikulpy-find = "sikuli.find:main"
