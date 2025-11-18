@@ -11,8 +11,8 @@ Installation:
 ```
 $ git clone https://github.com/shish/sikulpy
 $ cd sikulpy
-$ python3.7 -m venv .env
-$ . .env/bin/activate
+$ python3 -m venv venv
+$ source venv/bin/activate
 $ pip install -e ./
 $ sikulpy ~/Documents/sikuli/foo.sikuli
 ```

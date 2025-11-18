@@ -1,7 +1,4 @@
-env
-.env
-.env2
-.venv
+venv/
 build/
 dist/
 .idea
