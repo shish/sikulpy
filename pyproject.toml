@@ -4,7 +4,8 @@ version = "0.0"
 authors = [{ name = "Shish", email = "shish@shishnet.org" }]
 description = "An implementation of Sikuli for CPython"
 readme = "README.md"
-requires-python = ">=3.13"
+# autopy doesn't build on 3.14 yet
+requires-python = ">=3.13,<3.14"
 dependencies = [
     "autopy>=4.0.0",
     "pillow",
@@ -17,8 +18,13 @@ dependencies = [
 [project.urls]
 Homepage = "https://github.com/shish/sikulpy"
 
-[project.optional-dependencies]
-dev = ["ruff", "mypy", "pytest-cov", "types-Pillow"]
+[dependency-groups]
+dev = [
+    "ruff",
+    "mypy",
+    "pytest-cov",
+    "types-Pillow",
+]
 
 [tool.setuptools]
 py-modules = ["sikuli"]
