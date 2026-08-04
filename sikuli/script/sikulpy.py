@@ -3,11 +3,18 @@
 strict = False
 
 
+class UnofficialApiException(Exception):
+    pass
+
+
 def unofficial(f):
     if strict:
 
         def fail(*args, **kwargs):
-            raise Exception("%s(%r, %r) is unofficial" % (f.__name__, args, kwargs))
+            raise UnofficialApiException(
+                f"{f.__name__}({args!r}, {kwargs!r}) is an unofficial extension "
+                "to the Sikuli API and is not supported in strict mode"
+            )
 
         return fail
     else:

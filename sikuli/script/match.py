@@ -2,17 +2,15 @@
 http://doc.sikuli.org/match.html
 """
 
-import typing as t
-
-from .region import Region
-from .rectangle import Rectangle
 from .location import Location
+from .rectangle import Rectangle
+from .region import Region
 
 
 class Match(Region):
     def __init__(self, rect: Rectangle, sim: float, targetOffset: Location):
         Region.__init__(self, rect)
-        self._name: t.Optional[str] = None
+        self._name: str | None = None
         self._score = sim
         self._targetOffset = targetOffset
 
@@ -37,8 +35,4 @@ class Match(Region):
         return self.getScore() < other.getScore()
 
     def __repr__(self) -> str:
-        return "%s(%r, %.3f)" % (
-            self.__class__.__name__,
-            self._name or self.getRect(),
-            self.getScore(),
-        )
+        return f"{self.__class__.__name__}({(self._name or self.getRect())!r}, {self.getScore():.3f})"

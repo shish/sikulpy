@@ -1,7 +1,7 @@
-import Quartz
-import LaunchServices
-from Cocoa import NSURL
-import Quartz.CoreGraphics as CG
+import LaunchServices  # type: ignore
+import Quartz  # type: ignore
+import Quartz.CoreGraphics as CG  # type: ignore
+from Cocoa import NSURL  # type: ignore
 
 
 def screenshot(path, region=None):

@@ -1,13 +1,10 @@
-import typing as t
-
-
-class Settings(object):
+class Settings:
     autoWaitTimeout = 0
 
     Scale = 1  # FIXME: unofficial
     Channel = None  # FIXME: unofficial
 
-    ImagePaths: t.List[str] = []
+    ImagePaths: list[str] = []  # noqa
 
     # Either option might be switched on (True) or off (False), to show or
     # hide the respective message type in the IDE console or on command line

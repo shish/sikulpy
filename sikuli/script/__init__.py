@@ -1,45 +1,44 @@
 import sys
-from typing import Union, List
 
 from .app import App  # noqa
 from .env import Env  # noqa
 from .finder import Finder  # noqa
+from .key import Key, KeyModifier, Mouse  # noqa
 from .location import Location  # noqa
-from .match import Match  # noqa
-from .pattern import Pattern  # noqa
+from .match import Match
+from .pattern import Pattern
 from .rectangle import Rectangle  # noqa
 from .region import Region  # noqa
-from .screen import Screen  # noqa
-from .settings import Settings  # noqa
-from .key import Key, KeyModifier, Mouse  # noqa
 from .robot import Robot  # noqa
+from .screen import Screen
+from .settings import Settings
 
 desktop = Screen(0)
 
 
-def find(ps: Union[Pattern, str]) -> Match:
+def find(ps: Pattern | str) -> Match:
     return desktop.find(ps)
 
 
 def popup(text: str, title: str) -> None:
     raise NotImplementedError(
-        "sikuli.popup(%r, %r) not implemented" % (text, title)
+        f"sikuli.popup({text!r}, {title!r}) not implemented"
     )  # FIXME
 
 
 def input_(text: str, default: str) -> str:
     raise NotImplementedError(
-        "sikuli.input(%r, %r) not implemented" % (text, default)
+        f"sikuli.input({text!r}, {default!r}) not implemented"
     )  # FIXME
 
 
 def load(path: str):
-    raise NotImplementedError("sikuli.load(%r) not implemented" % (path,))  # FIXME
+    raise NotImplementedError(f"sikuli.load({path!r}) not implemented")
 
 
 def setShowActions(sa: bool):
     raise NotImplementedError(
-        "sikuli.setShowActions(%r) not implemented" % (sa,)
+        f"sikuli.setShowActions({sa!r}) not implemented"
     )  # FIXME
 
 
@@ -47,7 +46,7 @@ def exit(code: int) -> None:
     sys.exit(code)
 
 
-def getImagePath() -> List[str]:
+def getImagePath() -> list[str]:
     """
     Get a list of paths where Sikuli will search for images.
     """
@@ -68,11 +67,11 @@ def removeImagePath(path: str) -> None:
     Settings.ImagePaths.remove(path)
 
 
-def getBundlePath() -> List[str]:
+def getBundlePath() -> list[str]:
     raise NotImplementedError("sikuli.getBundlePath() not implemented")  # FIXME
 
 
 def setBundlePath(path: bool):
     raise NotImplementedError(
-        "sikuli.setBundlePath(%r) not implemented" % (path,)
+        f"sikuli.setBundlePath({path!r}) not implemented"
     )  # FIXME

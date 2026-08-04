@@ -3,10 +3,9 @@ http://doc.sikuli.org/screen.html
 """
 
 import tempfile
-import typing as t
 
-from .region import Region
 from .rectangle import Rectangle
+from .region import Region
 from .robot import Robot
 
 
@@ -15,6 +14,7 @@ class Screen(Region):
         x, y, w, h = Robot.screenSize()
         Region.__init__(self, Rectangle(x, y, w, h))
         self.id = id_
+        self._screen = self
 
     @staticmethod
     def getNumberScreens() -> int:
@@ -23,16 +23,16 @@ class Screen(Region):
     def getBounds(self) -> Rectangle:
         return self.getRect()
 
-    def capture(self, rect: Rectangle) -> str:
+    def capture(self, rect: Rectangle | None) -> str:
         if not rect:
             rect = self.getBounds()
-        fn = tempfile.mktemp(".png")
+        (_fd, fn) = tempfile.mkstemp(".png")
         img = Robot.capture((int(rect.x), int(rect.y), int(rect.w), int(rect.h)))
         img.save(fn)
         return fn
 
-    def selectRegion(self, text: t.Optional[str] = None) -> Region:
+    def selectRegion(self, text: str | None = None) -> Region:
         # interactive selection, with label
         raise NotImplementedError(
-            "Screen.selectRegion(%r) not implemented" % text
+            f"Screen.selectRegion({text!r}) not implemented"
         )  # FIXME

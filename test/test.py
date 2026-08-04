@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-from sikuli import *
 import logging
+
+from sikuli import *
 
 logging.basicConfig(level=logging.INFO)
 logging.getLogger("sikuli").setLevel(logging.DEBUG)
