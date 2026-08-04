@@ -1,5 +1,6 @@
 import unittest
-from sikuli import Rectangle, Location
+
+from sikuli import Location, Rectangle
 
 
 class TestRectangle(unittest.TestCase):

@@ -21,9 +21,10 @@ Homepage = "https://github.com/shish/sikulpy"
 [dependency-groups]
 dev = [
     "ruff",
-    "mypy",
+    "ty",
     "pytest-cov",
     "types-Pillow",
+    "pudb",
 ]
 
 [tool.setuptools]
@@ -34,25 +35,6 @@ addopts = "--cov --cov-report term-missing --cov-fail-under 40"
 
 [tool.coverage.run]
 source = ["sikuli"]
-
-[tool.mypy]
-files = "sikuli"
-
-[[tool.mypy.overrides]]
-module = "autopy.*"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "pyperclip.*"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "pytesseract.*"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "pudb.*"
-ignore_missing_imports = true
 
 [build-system]
 requires = ["setuptools>=61.0"]

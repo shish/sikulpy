@@ -1,11 +1,10 @@
+import logging
+import os
+import warnings
+
 from PIL import Image as PILImage  # EXT
-from typing import Union
 
 from .settings import Settings
-
-import os
-import logging
-import warnings
 
 log = logging.getLogger(__name__)
 
@@ -14,11 +13,11 @@ def _same_contents(a: str, b: str) -> bool:
     return open(a, "rb").read() == open(b, "rb").read()
 
 
-class Image(object):
-    def __init__(self, base: Union[PILImage.Image, str]) -> None:
+class Image:
+    def __init__(self, base: PILImage.Image | str) -> None:
         if isinstance(base, PILImage.Image):
             self.img = base
-            self._repr = "Image(%rx%r)" % (base.size[0], base.size[1])
+            self._repr = f"Image({base.size[0]!r}x{base.size[1]!r})"
         elif isinstance(base, str):
             full_path = None
             for p in Settings.ImagePaths:
@@ -29,11 +28,11 @@ class Image(object):
                     else:
                         if not _same_contents(try_path, full_path):
                             warnings.warn(
-                                "Multiple sources for %s, using %s" % (base, full_path)
+                                f"Multiple sources for {base}, using {full_path}"
                             )
                             break
             if not full_path:
-                raise Exception("Couldn't find %r in %r" % (base, Settings.ImagePaths))
+                raise ValueError(f"Couldn't find {base!r} in {Settings.ImagePaths!r}")
 
             i: PILImage.Image = PILImage.open(full_path)
             if Settings.Scale != 1.0:
@@ -52,9 +51,9 @@ class Image(object):
                     (int(i.size[0] * Settings.Scale), int(i.size[1] * Settings.Scale))
                 )
             self.img = i
-            self._repr = "Image(%r)" % base
+            self._repr = f"Image({base!r})"
         else:
-            raise Exception("Can't make an image from %r" % base)
+            raise TypeError(f"Can't make an image from {base!r}")
 
         self.w = self.img.size[0]
         self.h = self.img.size[1]

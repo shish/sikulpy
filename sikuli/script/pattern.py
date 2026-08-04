@@ -2,12 +2,12 @@
 http://doc.sikuli.org/pattern.html
 """
 
-from .location import Location
 from .image import Image
+from .location import Location
 from .settings import Settings
 
 
-class Pattern(object):
+class Pattern:
     def __init__(self, filename: str):
         """
         This will initialize a new pattern object without any additional
@@ -23,9 +23,9 @@ class Pattern(object):
 
     def __repr__(self) -> str:
         if self._targetOffset == Location(0, 0):
-            return "Pattern(%r)" % self.img
+            return f"Pattern({self.img!r})"
         else:
-            return "Pattern(%r, %r)" % (self.img, self._targetOffset)
+            return f"Pattern({self.img!r}, {self._targetOffset!r})"
 
     def _copy(self) -> "Pattern":
         p = Pattern(self.filename)

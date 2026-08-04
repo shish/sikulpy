@@ -1,12 +1,12 @@
-from .location import Location
-
 from typing import TYPE_CHECKING
+
+from .location import Location
 
 if TYPE_CHECKING:
     from .region import Region
 
 
-class Rectangle(object):
+class Rectangle:
     def __init__(self, x: float = 0, y: float = 0, w: float = 0, h: float = 0) -> None:
         self.x = x
         self.y = y
@@ -14,13 +14,7 @@ class Rectangle(object):
         self.h = h
 
     def __repr__(self) -> str:
-        return "%s(%d, %d, %d, %d)" % (
-            self.__class__.__name__,
-            self.x,
-            self.y,
-            self.w,
-            self.h,
-        )
+        return f"{self.__class__.__name__}({int(self.x)}, {int(self.y)}, {int(self.w)}, {int(self.h)})"
 
     def __eq__(self, b: object) -> bool:
         return (

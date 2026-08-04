@@ -1,22 +1,22 @@
 import platform
 
+from ..version import VERSION
 from .location import Location
 from .robot import Robot
 from .sikulpy import unofficial
-from ..version import VERSION
 
 
-class Env(object):
+class Env:
     @staticmethod
     def addHotkey(key, modifiers, handler):
         raise NotImplementedError(
-            "Env.addHotKey(%r, %r, %r) not implemented" % (key, modifiers, handler)
+            f"Env.addHotKey({key!r}, {modifiers!r}, {handler!r}) not implemented"
         )  # FIXME
 
     @staticmethod
     def removeHotkey(key, modifiers):
         raise NotImplementedError(
-            "Env.removeHotKey(%r, %r) not implemented" % (key, modifiers)
+            f"Env.removeHotKey({key!r}, {modifiers!r}) not implemented"
         )  # FIXME
 
     @staticmethod
@@ -30,7 +30,7 @@ class Env(object):
 
     @staticmethod
     def getSikuliVersion() -> str:
-        return "sikulpy %s" % VERSION
+        return f"sikulpy {VERSION}"
 
     @staticmethod
     def getClipboard() -> str:

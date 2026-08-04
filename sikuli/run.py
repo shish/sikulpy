@@ -1,20 +1,16 @@
-#!/usr/bin/env python3
-
+import argparse
+import logging
 import os
 import runpy
 import sys
-import logging
-import argparse
 
 from sikuli import Settings
 
-logging.captureWarnings(True)
-logging.getLogger("sikuli").setLevel(logging.WARNING)
-logging.getLogger("PIL").setLevel(logging.WARNING)
+log = logging.getLogger(__name__)
 
 
 def reload(module: str) -> None:
-    logging.debug("Stub reload(%r)" % module)
+    log.debug(f"Stub reload({module!r})")
 
 
 def run(folder: str) -> None:
@@ -40,16 +36,20 @@ def main() -> int:
     parser.add_argument("script")
     args = parser.parse_args()
 
+    logging.captureWarnings(True)
     if args.debug:
         logging.basicConfig(
             format="%(asctime)-15s %(filename)s:%(lineno)d %(message)s",
             level=logging.DEBUG,
         )
         logging.getLogger("sikuli").setLevel(logging.DEBUG)
+    else:
+        logging.getLogger("sikuli").setLevel(logging.WARNING)
+    logging.getLogger("PIL").setLevel(logging.WARNING)
 
     if args.debugger:
         try:
-            import pudb
+            import pudb  # noqa
 
             pudb.set_interrupt_handler()
         except ImportError:

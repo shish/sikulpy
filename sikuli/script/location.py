@@ -2,18 +2,16 @@
 http://doc.sikuli.org/location.html
 """
 
-import typing as t
-
 from .sikulpy import unofficial
 
 
-class Location(object):
+class Location:
     def __init__(self, x: float, y: float) -> None:
         self.x = x
         self.y = y
 
     def __repr__(self) -> str:
-        return "Location(%r, %r)" % (self.x, self.y)
+        return f"Location({self.x!r}, {self.y!r})"
 
     def __eq__(self, other: object) -> bool:
         return isinstance(other, Location) and self.x == other.x and self.y == other.y
@@ -30,7 +28,7 @@ class Location(object):
         return Location(self.x * factor, self.y * factor)
 
     @unofficial
-    def getXY(self) -> t.Tuple[float, float]:
+    def getXY(self) -> tuple[float, float]:
         return self.getX(), self.getY()
 
     def getX(self) -> float:

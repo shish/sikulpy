@@ -1,5 +1,5 @@
 try:
-    from .script import *  # noqa
+    from .script import *
 except ImportError as e:
-    print("Error importing sikuli: %s" % e)
-from .version import *  # noqa
+    print(f"Error importing sikuli: {e}")
+from .version import *

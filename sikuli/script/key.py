@@ -5,7 +5,7 @@ http://doc.sikuli.org/keys.html
 import autopy  # EXT
 
 
-class Key(object):
+class Key:
     ENTER = autopy.key.Code.RETURN
     UP = autopy.key.Code.UP_ARROW
     DOWN = autopy.key.Code.DOWN_ARROW
@@ -15,7 +15,7 @@ class Key(object):
     TAB = "\t"
 
 
-class KeyModifier(object):
+class KeyModifier:
     # these differ based on platform
     CTRL = autopy.key.Modifier.CONTROL
     SHIFT = autopy.key.Modifier.SHIFT
@@ -26,7 +26,7 @@ class KeyModifier(object):
     WIN = META
 
 
-class Mouse(object):
+class Mouse:
     LEFT = 1
     RIGHT = 2
     MIDDLE = 3

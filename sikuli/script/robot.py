@@ -1,21 +1,17 @@
+import logging
 import platform
 import subprocess
 from enum import Enum
 from time import time
-import typing as t
-
-from PIL import Image as PILImage  # EXT
 
 import autopy  # EXT
 import mss  # EXT
 import pyperclip  # EXT
+from PIL import Image as PILImage  # EXT
 
 from .image import Image
 from .key import Mouse
 from .sikulpy import unofficial
-
-
-import logging
 
 log = logging.getLogger(__name__)
 
@@ -29,15 +25,15 @@ class Platform(Enum):
 PLATFORM = Platform(platform.system())
 
 
-class Robot(object):
-    autopyMouseMap = {
+class Robot:
+    autopyMouseMap = {  # noqa
         Mouse.LEFT: autopy.mouse.Button.LEFT,
         Mouse.RIGHT: autopy.mouse.Button.RIGHT,
         Mouse.MIDDLE: autopy.mouse.Button.MIDDLE,
     }
 
     @staticmethod
-    def mouseMove(xy: t.Tuple[int, int]):
+    def mouseMove(xy: tuple[int, int]):
         log.info("mouseMove(%r)", xy)
         x, y = int(xy[0]), int(xy[1])
 
@@ -54,7 +50,7 @@ class Robot(object):
         autopy.mouse.toggle(Robot.autopyMouseMap[button], False)
 
     @staticmethod
-    def getMouseLocation() -> t.Tuple[int, int]:
+    def getMouseLocation() -> tuple[int, int]:
         xy = autopy.mouse.location()
         return int(xy[0]), int(xy[1])
 
@@ -93,7 +89,7 @@ class Robot(object):
 
     @staticmethod
     def isLockOn(key) -> bool:
-        raise NotImplementedError("Robot.isLockOn(%r) not implemented" % key)  # FIXME
+        raise NotImplementedError(f"Robot.isLockOn({key!r}) not implemented")  # FIXME
 
     # screen
     @staticmethod
@@ -102,12 +98,12 @@ class Robot(object):
             return len(sct.monitors) - 1
 
     @staticmethod
-    def screenSize() -> t.Tuple[int, int, int, int]:
+    def screenSize() -> tuple[int, int, int, int]:
         with mss.mss() as sct:
             return 0, 0, sct.monitors[0]["width"], sct.monitors[0]["height"]
 
     @staticmethod
-    def capture(bbox: t.Optional[t.Tuple[int, int, int, int]] = None) -> Image:
+    def capture(bbox: tuple[int, int, int, int] | None = None) -> Image:
         _start = time()
 
         with mss.mss() as sct:
@@ -139,22 +135,22 @@ class Robot(object):
         if PLATFORM == Platform.DARWIN:
             # FIXME: we don't want to hard-code 'Chrome' as the app, and
             # we want 'window title contains X' rather than 'is X'
-            script = b"""
-set theTitle to "%s"
+            script = f"""
+set theTitle to "{application}"
 tell application "System Events"
     tell process "Chrome"
         set frontmost to true
         perform action "AXRaise" of (windows whose title is theTitle)
     end tell
 end tell
-""" % application.encode("ascii")
-            subprocess.run("osascript", input=script, shell=True)
+""".encode("ascii")
+            subprocess.run("osascript", input=script, shell=True, check=True)
         elif PLATFORM == Platform.LINUX:
-            p = subprocess.Popen(
-                "xdotool search --name '%s' windowactivate" % application, shell=True
+            subprocess.run(
+                ["xdotool", "search", "--name", application, "windowactivate"],
+                check=True,
             )
-            p.wait()
         else:
             raise NotImplementedError(
-                "App.focus(%r) not implemented for %r" % (application, PLATFORM)
+                f"App.focus({application!r}) not implemented for {PLATFORM!r}"
             )  # FIXME
