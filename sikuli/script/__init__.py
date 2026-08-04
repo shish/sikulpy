@@ -37,9 +37,7 @@ def load(path: str):
 
 
 def setShowActions(sa: bool):
-    raise NotImplementedError(
-        f"sikuli.setShowActions({sa!r}) not implemented"
-    )  # FIXME
+    raise NotImplementedError(f"sikuli.setShowActions({sa!r}) not implemented")  # FIXME
 
 
 def exit(code: int) -> None:
