@@ -1,22 +1,39 @@
 # SikulPy
 
-Sikuli[1] is pretty awesome, but it requires java. Bleh.
+[Sikuli](http://www.sikulix.com/) is pretty awesome, but it requires java. Bleh.
 
 This is a project to provide the same API using regular CPython libraries.
 
 The goal is to be able to run any script which works in the Java IDE.
 
-Installation:
+
+## Use as an app
+
 ```
 git clone https://github.com/shish/sikulpy
 cd sikulpy
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e .
-sikulpy ~/Documents/sikuli/foo.sikuli
+uv run sikulpy ~/Documents/sikuli/foo.sikuli
 ```
 
-[1] http://www.sikulix.com/
+
+## Use as a library
+
+In pyproject.toml, add:
+```
+[project]
+dependencies = [
+    "sikulpy",
+]
+```
+
+In your code:
+```
+from sikuli import *
+
+scr = Screen(0)
+button = scr.find("test.png")
+button.click()
+```
 
 
 ## Java-Sikuli compatibility
